@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<header style="
+    position: absolute !important; 
+    top: 0 !important; 
+    left: 0 !important; 
+    width: 100% !important; 
+    background: #ffffff !important; 
+    padding: 30px 0 20px 60px !important; 
+    margin: 0 !important; 
+    z-index: 1000 !important;
+    display: block !important;
+    text-align: left !important;">
+    
+    <div style="display: inline-block !important; text-align: left !important;">
+        <span style="font-family: 'Playfair Display', serif; font-size: 1.8rem; color: #2C3E50; letter-spacing: 5px; text-transform: uppercase;">NAUTILUS</span>
+        <span style="font-family: 'Poppins', sans-serif; font-size: 1.8rem; font-weight: 300; color: #D6C8BA; text-transform: uppercase; margin-left: 8px;">SPA</span>
+    </div>
+</header>
+
+<div style="height: 120px;"></div>
+<style>
+    .grid-servicios {
+        display: flex;
+        flex-direction: row;
+        overflow-x: auto;
+        gap: 2.5rem;
+        padding: 1rem 0;
+    }
+
+    .card-nautilus {
+        background: var(--blanco);
+        border-radius: 30px; 
+        overflow: hidden;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+        transition: transform 0.3s ease;
+        border: none;
+        flex-shrink: 0;
+        width: 300px;
+    }
+
+    .card-nautilus:hover {
+        transform: translateY(-10px);
+    }
+
+    .img-wrapper { height: 220px; }
+    .img-wrapper img { width: 100%; height: 100%; object-fit: cover; }
+
+    .card-info { 
+        padding: 2rem; 
+        text-align: left; 
+    }
+
+    .card-info h3 {
+        font-family: 'Poppins', sans-serif;
+        font-size: 1rem;
+        color: var(--rain-boots);
+        margin-bottom: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        line-height: 1.4;
+    }
+
+    .card-price {
+        font-size: 1.3rem;
+        color: #2d2d2d;   
+        font-weight: 500;
+        margin-bottom: 1.5rem;
+    }
+
+    .btn-comprar {
+        display: block;
+        background: var(--rain-boots);
+        color: white;
+        text-decoration: none;
+        padding: 0.9rem;
+        text-align: center;
+        font-size: 0.8rem;
+        font-weight: 600;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        border-radius: 50px;
+        transition: background 0.3s ease;
+    }
+
+    .btn-comprar:hover {
+        background: #597fa8;
+        color: white;
+        text-decoration: none;
+    }
+</style>
+
+<section class="grid-servicios">
+    {% for c in lista_servicios %}
+    <div class="card-nautilus">
+        <div class="img-wrapper">
+            <img src="{{ c.image }}" alt="{{ c.name }}">
+        </div>
+        <div class="card-info">
+            <h3>{{ c.name }}</h3>
+            <div class="card-price">${{ c.price }}</div>
+            <a href="{% url 'detalle' c.id %}" class="btn-comprar">Reservar</a>
+        </div>
+    </div>
+    {% endfor %}
+</section>
+{% endblock %}

@@ -1,0 +1,135 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@700&family=Poppins:wght@400;500;600&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow-x: hidden;
+    background-color: #fff;
+}
+
+/* FONDO CON OVERLAY OSCURO */
+.bg-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+}
+
+.register-page .bg-overlay {
+    background: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)), url('../p1.jpg') no-repeat center center;
+}
+.login-page .bg-overlay {
+    background: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)), url('../p2.jpg') no-repeat center center;
+}
+
+/* TARJETA BLANCA CON SOMBRA SUAVE */
+.auth-card {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    border-radius: 24px;
+    padding: 40px;
+    width: 90%;
+    max-width: 450px;
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.12);
+    text-align: center;
+}
+
+h1 {
+    margin-bottom: 25px;
+    color: #1a1a1a;
+    font-weight: 600;
+}
+
+/* MENSAJES DE ERROR/ÉXITO (Aquí se arreglaron los errores de VS Code) */
+.messages-container { margin-bottom: 15px; }
+.msg-error { color: firebrick; font-weight: bold; font-size: 0.9rem; }
+.msg-success { color: rgb(2, 160, 23); font-weight: bold; font-size: 0.9rem; }
+
+/* CAMPOS DE TEXTO */
+.input-container {
+    position: relative;
+    margin-bottom: 25px;
+    border-bottom: 2px solid #555;
+}
+
+.input-container input {
+    width: 100%;
+    height: 40px;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-size: 1rem;
+    color: #000;
+    padding: 0 5px;
+}
+
+.input-container label {
+    position: absolute;
+    top: 50%;
+    left: 5px;
+    transform: translateY(-50%);
+    color: #333;
+    transition: 0.3s;
+    pointer-events: none;
+}
+
+.input-container input:focus ~ label,
+.input-container input:valid ~ label {
+    top: -10px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: #000;
+}
+
+.line {
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: #000;
+    transition: 0.4s;
+}
+
+.input-container input:focus ~ .line { width: 100%; }
+
+/* BOTÓN NEGRO */
+.submit-btn {
+    width: 100%;
+    height: 50px;
+    background: #1a1a1a;
+    color: #fff;
+    border: none;
+    border-radius: 25px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.submit-btn:hover { background: #333; transform: translateY(-2px); }
+
+/* ENLACES Y FILAS */
+.footer-link { margin-top: 20px; font-size: 0.9rem; }
+.footer-link a { color: #000; text-decoration: none; font-weight: bold; }
+.name-row { display: flex; gap: 15px; }
+
+/* RESPONSIVE */
+@media (max-width: 480px) {
+    .name-row { flex-direction: column; gap: 0; }
+}

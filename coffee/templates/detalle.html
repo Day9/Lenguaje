@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    .detalle-layout {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 3rem;
+        background: var(--blanco);
+        padding: 3rem;
+        border-radius: 40px; /* Contenedor principal redondo */
+        box-shadow: 0 15px 40px rgba(0,0,0,0.04);
+    }
+
+    @media (max-width: 850px) { .detalle-layout { grid-template-columns: 1fr; padding: 1.5rem; } }
+
+    .detalle-img img {
+        width: 100%;
+        border-radius: 25px; /* Imagen redonda */
+    }
+
+    .detalle-texto h1 {
+        font-family: 'Playfair Display', serif;
+        font-size: 2rem;
+        color: var(--rain-boots);
+        margin-bottom: 1.5rem;
+    }
+
+    .specialist-info {
+        background: #f8f9fa;
+        padding: 1rem;
+        border-radius: 15px;
+        margin-bottom: 2rem;
+        font-size: 0.9rem;
+        color: var(--rain-boots);
+        display: flex;
+        align-items: center;
+    }
+
+    .specialist-info i { color: var(--pastel-gray); margin-right: 10px; font-size: 1.2rem; }
+
+    .input-nautilus {
+        width: 100%;
+        padding: 0.8rem 1.2rem;
+        border: 1px solid var(--beau-blue);
+        border-radius: 50px; /* Input redondo */
+        margin-bottom: 1.5rem;
+        outline: none;
+    }
+
+    .btn-reserva {
+        width: 100%;
+        background: var(--rain-boots);
+        color: white;
+        border: none;
+        padding: 1rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        border-radius: 50px; /* Botón redondo */
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .btn-reserva:hover { background: #386596; }
+
+    .back-link {
+        display: inline-block;
+        margin-top: 1.5rem;
+        color: var(--pastel-gray);
+        text-decoration: none;
+        font-size: 0.8rem;
+    }
+</style>
+
+<div class="detalle-layout">
+    <div class="detalle-img">
+        <img src="{{ servicio.image }}" alt="{{ servicio.name }}">
+    </div>
+    <div class="detalle-texto">
+        <h1>{{ servicio.name }}</h1>
+        
+        <p style="color: #2b2a2a; line-height: 1.8; margin-bottom: 1.5rem;">
+            {{ servicio.description|default:"Una inmersión profunda en el bienestar para restaurar tu equilibrio." }}
+        </p>
+
+        <div class="specialist-info">
+            <i class="fas fa-user-md"></i>
+            <span><strong>Especialista:</strong> {{ servicio.specialist|default:"Personal certificado" }}</span>
+        </div>
+    <form style="display: flex; flex-direction: column; gap: 0.5rem; margin-top: 1rem;">
+    <label style="font-size: 0.7rem; font-weight: 700; margin-left: 1rem; color: var(--rain-boots);">FECHA DE RESERVA</label>
+    <input type="date" class="input-nautilus" required>
+    <button type="submit" class="btn-reserva">Confirmar y Reservar</button>
+</form>
+        <a href="{% url 'home' %}" class="back-link">← Volver al catálogo</a>
+    </div>
+</div>
+{% endblock %}
