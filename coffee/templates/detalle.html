@@ -87,11 +87,20 @@
             <i class="fas fa-user-md"></i>
             <span><strong>Especialista:</strong> {{ servicio.specialist|default:"Personal certificado" }}</span>
         </div>
-    <form style="display: flex; flex-direction: column; gap: 0.5rem; margin-top: 1rem;">
-    <label style="font-size: 0.7rem; font-weight: 700; margin-left: 1rem; color: var(--rain-boots);">FECHA DE RESERVA</label>
-    <input type="date" class="input-nautilus" required>
-    <button type="submit" class="btn-reserva">Confirmar y Reservar</button>
-</form>
+
+        {% if user.is_authenticated %}
+        <form method="POST" style="display: flex; flex-direction: column; gap: 0.5rem; margin-top: 1.5rem;">
+            {% csrf_token %}
+            <label style="font-size: 0.7rem; font-weight: 700; margin-left: 1rem; color: var(--rain-boots);">FECHA DE RESERVA</label>
+            <input type="date" name="date" class="input-nautilus" required>
+            <label style="font-size: 0.7rem; font-weight: 700; margin-left: 1rem; color: var(--rain-boots);">HORA DE RESERVA</label>
+            <input type="time" name="time" class="input-nautilus" required>
+            <button type="submit" class="btn-reserva">Confirmar y Reservar</button>
+        </form>
+        {% else %}
+        <p style="color: #667085; margin-top: 1.5rem;">Inicia sesión para reservar este servicio.</p>
+        {% endif %}
+
         <a href="{% url 'home' %}" class="back-link">← Volver al catálogo</a>
     </div>
 </div>

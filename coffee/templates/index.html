@@ -1,8 +1,60 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
 {% block content %}
-    <h1>Bienvenido a Nautilus SPA</h1>
-    <p>Esta es la página principal. El estilo base ya está aplicado.</p>
-    <br>
-    <a href="{% url 'login' %}">Login</a>
+<style>
+    .full-hero {
+        width: 100%;
+        height: calc(100vh - 70px); /* Ajuste perfecto según el alto del nav */
+        background: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.1)), 
+                    url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1920&q=80');
+        background-size: cover;
+        background-position: center;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        margin: 0;
+        padding: 0;
+    }
+
+    .title-large {
+        font-family: 'Playfair Display', serif;
+        font-size: clamp(3rem, 12vw, 7rem);
+        letter-spacing: 15px;
+        color: #1a1a1a;
+        margin: 0;
+        text-transform: uppercase;
+    }
+
+    .slogan-hero {
+        font-size: 1.4rem;
+        letter-spacing: 5px;
+        color: #333;
+        margin-bottom: 40px;
+        font-weight: 300;
+    }
+
+    .btn-cta {
+        background-color: #1a1a1a;
+        color: white !important;
+        padding: 18px 50px;
+        border-radius: 50px;
+        text-decoration: none;
+        font-weight: 600;
+        letter-spacing: 2px;
+        transition: 0.3s ease;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+
+    .btn-cta:hover {
+        background-color: #333;
+        transform: translateY(-3px);
+    }
+</style>
+
+<section class="full-hero">
+    <h1 class="title-large">NAUTILUS</h1>
+    <p class="slogan-hero">Bienestar que fluye como el mar</p>
+    <a href="{% url 'home' %}" class="btn-cta">VER TRATAMIENTOS</a>
+</section>
 {% endblock %}

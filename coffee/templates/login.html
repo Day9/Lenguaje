@@ -1,39 +1,53 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
-  <head>
+<html lang="es">
+<head>
     <meta charset="utf-8">
-    <title>Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión</title>
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-  </head>
-  <body class="login-page">
+</head>
+<body class="login-page">
     <div class="bg-overlay"></div>
 
     <div class="auth-card">
-      <h1>Login</h1>
-        
-      <form method="POST">
-        {% csrf_token %}
+        <h1>Inicio de Sesión</h1>
 
-        <div class="input-container">
-          <input type="text" name="username" required>
-          <label>Username</label>
-          <span class="line"></span>
+        {% if messages %}
+        <div class="messages-container">
+            {% for message in messages %}
+                {% if message.tags == 'error' %}
+                    <p class="msg-error">{{ message }}</p>
+                {% else %}
+                    <p class="msg-success">{{ message }}</p>
+                {% endif %}
+            {% endfor %}
         </div>
+        {% endif %}
 
-        <div class="input-container">
-          <input type="password" name="password" required>
-          <label>Password</label>
-          <span class="line"></span>
-        </div>
+        <form method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ next }}">
 
-        <input type="submit" value="Login" class="submit-btn">
-        <div class="footer-link">
-          Not a member? <a href="{% url 'register' %}">Signup</a>
-          <p>Forgot your Password? <a href="#">Reset Password</a></p>
-        </div>
-      </form>
+            <div class="input-container">
+                <input type="text" name="username" required>
+                <label>Nombre de usuario</label>
+                <span class="line"></span>
+            </div>
+
+            <div class="input-container">
+                <input type="password" name="password" required>
+                <label>Contraseña</label>
+                <span class="line"></span>
+            </div>
+
+            <input type="submit" value="Iniciar Sesión" class="submit-btn">
+
+            <div class="footer-link">
+                ¿Aún no eres miembro? <a href="{% url 'register' %}">Registrate</a>
+                <p>¿Olvidaste tu contraseña? <a href="{% url 'password_reset' %}">Restablecer Contraseña</a></p>
+            </div>
+        </form>
     </div>
-
-  </body>
+</body>
 </html>
