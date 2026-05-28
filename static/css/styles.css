@@ -8,16 +8,24 @@
     font-family: 'Segoe UI', sans-serif;
 }
 
+
 body {
     min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     overflow-x: hidden;
     background-color: #fff;
 }
 
-/* FONDO CON OVERLAY OSCURO */
+
+.login-page, .register-page {
+    min-height: calc(100vh - 70px); 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+
+
 .bg-overlay {
     position: fixed;
     top: 0;
@@ -37,7 +45,7 @@ body {
     background: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)), url('../p2.jpg') no-repeat center center;
 }
 
-/* TARJETA BLANCA CON SOMBRA SUAVE */
+
 .auth-card {
     background: rgba(255, 255, 255, 0.9);
     border: 1px solid rgba(255, 255, 255, 0.8);
@@ -55,12 +63,12 @@ h1 {
     font-weight: 600;
 }
 
-/* MENSAJES DE ERROR/ÉXITO (Aquí se arreglaron los errores de VS Code) */
+
 .messages-container { margin-bottom: 15px; }
 .msg-error { color: firebrick; font-weight: bold; font-size: 0.9rem; }
 .msg-success { color: rgb(2, 160, 23); font-weight: bold; font-size: 0.9rem; }
 
-/* CAMPOS DE TEXTO */
+
 .input-container {
     position: relative;
     margin-bottom: 25px;
@@ -108,7 +116,7 @@ h1 {
 
 .input-container input:focus ~ .line { width: 100%; }
 
-/* BOTÓN NEGRO */
+
 .submit-btn {
     width: 100%;
     height: 50px;
@@ -124,12 +132,12 @@ h1 {
 
 .submit-btn:hover { background: #333; transform: translateY(-2px); }
 
-/* ENLACES Y FILAS */
+
 .footer-link { margin-top: 20px; font-size: 0.9rem; }
 .footer-link a { color: #000; text-decoration: none; font-weight: bold; }
 .name-row { display: flex; gap: 15px; }
 
-/* RESPONSIVE */
+
 @media (max-width: 480px) {
     .name-row { flex-direction: column; gap: 0; }
 }

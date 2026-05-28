@@ -1,11 +1,13 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block content %}
 <style>
+    /* --- ESTRUCTURA HERO PRINCIPAL --- */
     .full-hero {
         width: 100%;
-        height: calc(100vh - 70px); /* Ajuste perfecto según el alto del nav */
-        background: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.1)), 
+        height: calc(100vh - 70px); 
+        background: linear-gradient(rgba(13, 52, 56, 0.5), rgba(13, 52, 56, 0.5)), 
                     url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1920&q=80');
         background-size: cover;
         background-position: center;
@@ -21,40 +23,622 @@
         font-family: 'Playfair Display', serif;
         font-size: clamp(3rem, 12vw, 7rem);
         letter-spacing: 15px;
-        color: #1a1a1a;
         margin: 0;
         text-transform: uppercase;
+        color: #f8f4ed; /* EXCEPCIÓN: Color claro sobre fondo oscuro */
+        text-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
     }
 
     .slogan-hero {
         font-size: 1.4rem;
         letter-spacing: 5px;
-        color: #333;
-        margin-bottom: 40px;
+        margin-bottom: 0; 
         font-weight: 300;
+        color: #EAE1D9; /* EXCEPCIÓN: Color claro sobre fondo oscuro */
     }
 
-    .btn-cta {
-        background-color: #1a1a1a;
-        color: white !important;
-        padding: 18px 50px;
-        border-radius: 50px;
-        text-decoration: none;
+    /* --- SECCIÓN INTRODUCTORIA (FONDO BLANCO PURO) --- */
+    .spa-scroll-content {
+        width: 100%;
+        background-color: #ffffff; 
+        padding: 90px 20px;
+        display: block; 
+    }
+
+    .info-container-minimal {
+        max-width: 800px;
+        margin: 0 auto; 
+        text-align: center;
+    }
+
+    .info-container-minimal .brand-tagline {
+        font-size: 0.9rem;
+        letter-spacing: 4px;
+        color: #07707D; /* CAMBIO: Subtítulo unificado al azul de la marca */
+        text-transform: uppercase;
+        display: block;
+        margin-bottom: 15px;
         font-weight: 600;
-        letter-spacing: 2px;
-        transition: 0.3s ease;
-        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
     }
 
-    .btn-cta:hover {
-        background-color: #333;
-        transform: translateY(-3px);
+    .info-container-minimal h2 {
+        font-family: 'Playfair Display', serif;
+        font-size: clamp(2rem, 5vw, 3rem);
+        color: #07707D; /* Azul principal */
+        margin-bottom: 25px;
+        letter-spacing: 1px;
+    }
+
+    .info-container-minimal p {
+        font-size: 1.15rem;
+        line-height: 1.9;
+        color: #2D3748; /* CAMBIO: Gris oscuro de alta legibilidad */
+        font-weight: 400;
+    }
+
+    /* --- SECCIÓN LADO A LADO: ¿POR QUÉ ESCOGERNOS? --- */
+    .nautilus-section-split {
+        width: 100%;
+        padding: 100px 10%;
+        background-color: #f8f0e4; 
+        display: grid;
+        grid-template-columns: 1fr 1.1fr; 
+        gap: 70px;
+        align-items: start;
+    }
+
+    .split-image-container {
+        width: 100%;
+    }
+
+    .split-display-img {
+        width: 100%;
+        height: 780px; 
+        object-fit: cover;
+        border-radius: 4px;
+        box-shadow: 0 12px 40px rgba(7, 112, 125, 0.06);
+        filter: brightness(0.95);
+    }
+
+    .split-text-container {
+        display: flex;
+        flex-direction: column;
+        gap: 35px;
+        text-align: left;
+    }
+
+    .split-header h2 {
+        font-family: 'Playfair Display', serif;
+        color: #07707D; /* Azul principal */
+        font-size: clamp(2rem, 4vw, 2.5rem);
+        font-weight: 600;
+        letter-spacing: 1.5px;
+        margin: 0 0 15px 0;
+        text-transform: uppercase;
+    }
+
+    .split-intro-text {
+        font-size: 1rem;
+        color: #2D3748; /* CAMBIO: Gris oscuro */
+        line-height: 1.7;
+        font-weight: 400;
+        margin: 0;
+    }
+
+    .split-features-vertical-list {
+        display: flex;
+        flex-direction: column; 
+        gap: 30px;
+    }
+
+    .feature-node-inline h3 {
+        font-family: 'Playfair Display', serif;
+        color: #07707D; /* Azul principal para los títulos de las características */
+        font-size: 1.2rem;
+        margin: 0 0 8px 0;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+    }
+
+    .feature-node-inline p {
+        font-size: 0.9rem;
+        color: #2D3748; /* CAMBIO: Gris oscuro */
+        line-height: 1.6;
+        font-weight: 400;
+        margin: 0;
+    }
+
+    /* --- SECCIONES COMUNES (SEÑALES Y POLÍTICAS) --- */
+    .nautilus-section {
+        width: 100%;
+        padding: 90px 10%;
+        background-color: #f8f0e4;
+        display: block;
+    }
+
+    .nautilus-section.alt-bg {
+        background-color: #EAE1D9; 
+    }
+
+    .section-header-controlled {
+        text-align: center;
+        max-width: 700px;
+        margin: 0 auto 60px auto;
+    }
+
+    .section-header-controlled h2 {
+        font-family: 'Playfair Display', serif;
+        color: #07707D; /* Azul principal */
+        font-size: clamp(1.8rem, 4vw, 2.2rem);
+        font-weight: 600;
+        letter-spacing: 1.5px;
+        margin-bottom: 15px;
+        text-transform: uppercase;
+    }
+
+    .section-header-controlled p {
+        font-size: 0.95rem;
+        color: #2D3748; /* CAMBIO: Gris oscuro */
+        line-height: 1.7;
+        font-weight: 400;
+    }
+
+    /* --- REJILLA DE SÍNTOMAS --- */
+    .symptoms-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 40px;
+        max-width: 1100px;
+        margin: 0 auto;
+    }
+
+    .symptom-card img {
+        width: 100%;
+        height: 260px;
+        object-fit: cover;
+        border-radius: 6px;
+        margin-bottom: 20px;
+        filter: brightness(0.95);
+    }
+
+    .symptom-card h3 {
+        font-family: 'Playfair Display', serif;
+        color: #07707D; /* Azul principal */
+        font-size: 1.15rem;
+        margin-bottom: 10px;
+        letter-spacing: 1px;
+    }
+
+    .symptom-card p {
+        font-size: 0.88rem;
+        color: #2D3748; /* CAMBIO: Gris oscuro */
+        line-height: 1.65;
+        font-weight: 400;
+    }
+
+    /* --- POLÍTICAS --- */
+    .policies-wrapper {
+        max-width: 750px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 35px;
+    }
+
+    .policy-node {
+        border-left: 3px solid #07707D; /* CAMBIO: Borde lateral con el azul de la marca */
+        padding-left: 20px;
+    }
+
+    .policy-node h3 {
+        font-family: 'Playfair Display', serif;
+        color: #07707D; /* CAMBIO: Títulos de las políticas en el azul unificado */
+        font-size: 1.1rem;
+        letter-spacing: 0.5px;
+        margin-bottom: 6px;
+    }
+
+    .policy-node p {
+        font-size: 0.88rem;
+        color: #2D3748; /* CAMBIO: Gris oscuro */
+        line-height: 1.6;
+        font-weight: 400;
+    }
+
+    /* --- SECCIÓN CONTACTO COMPACTA --- */
+    .nautilus-contact-split {
+        width: 100%;
+        min-height: 50vh; 
+        display: grid;
+        grid-template-columns: 1.3fr 0.7fr; 
+        background-color: #ffffff;
+    }
+
+    .contact-text-block {
+        padding: 40px 8% 40px 12%; 
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .contact-title {
+        font-family: 'Playfair Display', serif;
+        color: #07707D; /* Azul principal */
+        font-size: clamp(2.2rem, 4vw, 3rem);
+        text-transform: uppercase; 
+        margin-bottom: 15px;
+    }
+
+    .contact-description {
+        font-size: 0.95rem;
+        color: #2D3748; /* CAMBIO: Gris oscuro */
+        line-height: 1.6;
+        margin-bottom: 25px;
+        font-weight: 400;
+    }
+
+    .contact-info-channels {
+        display: flex;
+        flex-direction: column;
+        gap: 15px; 
+    }
+
+    .info-channel-node h3 {
+        font-family: 'Playfair Display', serif;
+        font-size: 1rem;
+        color: #07707D; /* CAMBIO: Etiquetas del canal (Teléfono, Email...) al azul de la marca */
+        margin-bottom: 2px;
+        text-transform: uppercase;
+    }
+
+    .info-channel-node p {
+        font-size: 1rem;
+        color: #2D3748; /* CAMBIO: Datos de los canales en gris oscuro */
+        margin: 0;
+        font-weight: 400;
+    }
+
+    .contact-image-block {
+        width: 100%;
+        height: 100%;
+    }
+
+    .contact-cover-img {
+        width: 100%;
+        height: 100%;
+        background-image: url("{% static 'p6.jpg' %}"); 
+        background-size: cover;
+        background-position: center;
+    }
+
+    /* --- FOOTER --- */
+    .nautilus-footer {
+        width: 100%;
+        background-color: #1A3438; 
+        color: #FAF8F5; /* EXCEPCIÓN: Texto claro sobre fondo oscuro */
+        padding: 70px 12% 40px 12%;
+        display: block;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    .footer-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .footer-brand-block {
+        margin-bottom: 40px;
+    }
+
+    .footer-logo {
+        font-family: 'Playfair Display', serif;
+        font-size: 3rem;
+        letter-spacing: 12px;
+        color: #f8f0e4; /* EXCEPCIÓN */
+        margin: 0;
+        text-transform: uppercase;
+        font-weight: 400;
+    }
+
+    .footer-links-columns {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 80px;
+        max-width: 600px;
+        width: 100%;
+        margin-top: 10px;
+        text-align: left;
+    }
+
+    .footer-column ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .footer-column ul li {
+        margin-bottom: 14px;
+    }
+
+    .footer-column ul li a {
+        color: #f7e2cf; /* EXCEPCIÓN */
+        text-decoration: none;
+        font-size: 0.82rem;
+        font-weight: 400;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        transition: color 0.3s ease;
+    }
+
+    .footer-column ul li a:hover {
+        color: #2C9E91;
+    }
+
+    .footer-bottom {
+        width: 100%;
+        max-width: 1200px;
+        margin: 60px auto 0 auto;
+        text-align: center;
+        border-top: 1px solid rgba(250, 248, 245, 0.1);
+        padding-top: 20px;
+    }
+
+    .footer-bottom p {
+        font-size: 0.75rem;
+        color: rgba(234, 225, 217, 0.5); /* EXCEPCIÓN */
+        font-weight: 300;
+        letter-spacing: 1.5px;
+        margin: 0;
+    }
+
+    /* --- RESPONSIVIDAD GENERAL --- */
+    @media (max-width: 1024px) {
+        .nautilus-section-split,
+        .nautilus-contact-split {
+            grid-template-columns: 1fr;
+            gap: 40px;
+            padding: 60px 20px;
+        }
+        .split-display-img {
+            height: 400px;
+        }
+        .contact-text-block {
+            padding: 60px 20px;
+        }
+        .contact-image-block {
+            height: 450px;
+        }
+        .nautilus-section {
+            padding: 60px 20px;
+        }
+    }
+
+    @media (max-width: 690px) {
+        .footer-links-columns {
+            grid-template-columns: 1fr;
+            gap: 30px;
+            text-align: center;
+        }
+        .footer-logo {
+            font-size: 2.2rem;
+            letter-spacing: 8px;
+        }
+    }
+
+    /* --- RESPONSIVIDAD GENERAL --- */
+    @media (max-width: 1024px) {
+        .nautilus-section-split,
+        .nautilus-contact-split {
+            grid-template-columns: 1fr;
+            gap: 40px;
+            padding: 60px 20px;
+        }
+        .split-display-img {
+            height: 400px;
+        }
+        .contact-text-block {
+            padding: 60px 20px;
+        }
+        .contact-image-block {
+            height: 450px;
+        }
+        .nautilus-section {
+            padding: 60px 20px;
+        }
+    }
+
+    @media (max-width: 690px) {
+        .footer-links-columns {
+            grid-template-columns: 1fr;
+            gap: 30px;
+            text-align: center;
+        }
+        .footer-logo {
+            font-size: 2.2rem;
+            letter-spacing: 8px;
+        }
     }
 </style>
 
 <section class="full-hero">
     <h1 class="title-large">NAUTILUS</h1>
     <p class="slogan-hero">Bienestar que fluye como el mar</p>
-    <a href="{% url 'home' %}" class="btn-cta">VER TRATAMIENTOS</a>
 </section>
+
+<section class="spa-scroll-content">
+    <div class="info-container-minimal">
+        <span class="brand-tagline">Experiencia de relajación marina</span>
+        <h2>Un Santuario de Calma Absoluta</h2>
+        <p>
+            El Spa Nautilus nace como un refugio diseñado para desconectar del ruido exterior y reconectar con la naturaleza. 
+            Inspirado en los ciclos curativos del océano, ofrecemos un espacio donde cada detalle está pensado para inducirte un estado de relajación profunda.
+        </p>
+    </div>
+</section>
+
+<section class="nautilus-section-split">
+    <div class="split-image-container">
+        <img src="{% static 'p3.jpg' %}" alt="Nautilus Experiencia" class="split-display-img">
+    </div>
+
+    <div class="split-text-container">
+        <div class="split-header">
+            <h2>¿Por qué escogernos?</h2>
+            <p class="split-intro-text">Nuestro compromiso es brindarte una experiencia transformadora arraigada en el cuidado consciente, el profesionalismo y la serenidad.</p>
+        </div>
+
+        <div class="split-features-vertical-list">
+            <div class="feature-node-inline">
+                <h3>Enfoque Holístico</h3>
+                <p>Integramos las corrientes físicas y emocionales en cada sesión para devolverle a tu cuerpo la fluidez que necesita, inspirándonos en la calma y el equilibrio natural de los ciclos del océano.</p>
+            </div>
+            
+            <div class="feature-node-inline">
+                <h3>Técnicas Personalizadas</h3>
+                <p>Cada cuerpo cuenta una historia diferente. Evaluamos tus tensiones particulares para adaptar la presión y el ritmo de las terapias, emulando el vaivén orgánico del mar para lograr una relajación profunda y efectiva.</p>
+            </div>
+
+            <div class="feature-node-inline">
+                <h3>Ambiente Íntimo</h3>
+                <p>Aislamiento acústico, aromas a brisa orgánica y un diseño minimalista libre de distracciones visuales, concebidos minuciosamente para proteger tu descanso de principio a fin en un oasis de serenidad.</p>
+            </div>
+
+            <div class="feature-node-inline">
+                <h3>Más que un masaje</h3>
+                <p>Trascendemos el alivio físico convencional. Creamos un espacio terapéutico integral diseñado para restaurar el equilibrio mental y emocional, permitiéndote reconectar contigo mismo.</p>
+            </div>
+
+            <div class="feature-node-inline">
+                <h3>Manos expertas, trato humano</h3>
+                <p>Nuestro equipo fusiona una rigurosa formación técnica con una profunda sensibilidad humana, garantizando un cuidado personalizado y respetuoso que comprende las necesidades de tu cuerpo.</p>
+            </div>
+
+            <div class="feature-node-inline">
+                <h3>Productos de alta calidad</h3>
+                <p>Seleccionamos meticulosamente fórmulas reconocidas por su eficacia, texturas envolventes y absoluto respeto por la salud de tu piel, asegurando resultados visibles y seguros.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="nautilus-section alt-bg">
+    <div class="section-header-controlled">
+        <h2>¿Cuándo necesitas un momento para ti?</h2>
+        <p>El cuerpo envía sutiles señales cuando el ritmo diario sobrepasa sus límites tolerables. Reconoce cuándo es momento de hacer una pausa.</p>
+    </div>
+
+    <div class="symptoms-grid">
+        <div class="symptom-card">
+            <img src="{% static 'mus.jpg' %}" alt="Alivio Muscular">
+            <h3>Dolor Muscular</h3>
+            <p>Cuando las responsabilidades y posturas prolongadas se traducen en contracturas rígidas localizadas en cuello, hombros o espalda alta.</p>
+        </div>
+        
+        <div class="symptom-card">
+            <img src="{% static 'ansiedad.jpg' %}" alt="Calma Mental">
+            <h3>Ansiedad y Estrés</h3>
+            <p>Cuando el flujo de pensamientos se vuelve abrumador y necesitas un espacio seguro para desacelerar el pulso y respirar profundo.</p>
+        </div>
+        
+        <div class="symptom-card">
+            <img src="{% static 'inm.jpg' %}" alt="Descanso Profundo">
+            <h3>Insomnio</h3>
+            <p>Cuando el cansancio acumulado te impide conciliar un sueño verdaderamente reparador. Un masaje profundo induce el estado ideal para resetear tu ciclo.</p>
+        </div>
+    </div>
+</section>
+
+<section class="nautilus-section">
+    <div class="section-header-controlled">
+        <h2>Políticas del Centro</h2>
+        <p>Normas esenciales concebidas con el único fin de salvaguardar el silencio, el respeto mutuo y la atmósfera de paz en nuestro oasis.</p>
+    </div>
+
+    <div class="policies-wrapper">
+        <div class="policy-node">
+            <h3>Políticas de Cancelación</h3>
+            <p>Toda modificación o cancelación de citas debe gestionarse con un mínimo de 24 horas de antelación por los medios de contacto que aparecen en el sitio web. Pasado ese límite, la sesión no admite reembolsos ni reajustes de agenda automáticos.</p>
+        </div>
+
+        <div class="policy-node">
+            <h3>Puntualidad y Duración del Servicio</h3>
+            <p>Recomendamos asistir 10 minutos antes de la hora pautada. En caso de retraso por parte del usuario, la sesión concluirá en el horario originalmente estipulado para no comprometer el bloque del siguiente cliente.</p>
+        </div>
+
+        <div class="policy-node">
+            <h3>Atmósfera de Silencio</h3>
+            <p>Para garantizar una desconexión íntegra, queda restringido el uso de dispositivos electrónicos con sonido en las áreas comunes y salas de terapia.</p>
+        </div>
+        
+        <div class="policy-node">
+            <h3>Salud y Seguridad</h3>
+            <p>Por tu protección, te solicitamos notificarnos previamente si estás embarazada, tienes alergias, lesiones o condiciones médicas particulares. Con el fin de evitar contraindicaciones, adaptaremos o sugeriremos las terapias más recomendables para ti.</p>
+        </div>
+    </div>
+</section>
+
+<section class="nautilus-contact-split">
+    <div class="contact-text-block">
+        <h2 class="contact-title">CONTÁCTANOS</h2>
+        <p class="contact-description">
+            Ofrecemos distintas opciones de tratamientos exclusivos pensados para ti. 
+            Contáctanos para adaptar la experiencia a tu ritmo.
+        </p>
+        <div class="contact-info-channels">
+            <div class="info-channel-node">
+                <h3>Teléfono</h3>
+                <p>+58 412-4008-115</p>
+            </div>
+            <div class="info-channel-node">
+                <h3>Email</h3>
+                <p>hellonautilusspa@gmail.com</p>
+            </div>
+            <div class="info-channel-node">
+                <h3>Social</h3>
+                <p>Instagram / TikTok</p>
+            </div>
+        </div>
+    </div>
+    <div class="contact-image-block">
+        <div class="contact-cover-img"></div>
+    </div>
+</section>
+
+<footer class="nautilus-footer">
+    <div class="footer-container">
+        <div class="footer-brand-block">
+            <h2 class="footer-logo">NAUTILUS</h2>
+        </div>
+
+        <div class="footer-links-columns">
+            <div class="footer-column">
+                <ul>
+                    <li><a href="/spa/home/">Tratamientos</a></li>
+                    <li><a href="#">Aviso Legal</a></li>
+                    <li><a href="#">Política de Privacidad</a></li>
+                    <li><a href="#">Política de Cookies</a></li>
+                    <li><a href="#">Redes Sociales</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-column">
+                <ul>
+                    <li><a href="#">Términos y Condiciones</a></li>
+                    <li><a href="#">Política de Cancelación</a></li>
+                    <li><a href="#">Política de Reservas</a></li>
+                    <li><a href="#">Contacto</a></li>
+                    <li><a href="#">Normas de Convivencia</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-bottom">
+        <p>&copy; 2026 NAUTILUS SPA. ALL RIGHTS RESERVED.</p>
+    </div>
+</footer>
 {% endblock %}

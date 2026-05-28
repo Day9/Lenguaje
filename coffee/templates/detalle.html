@@ -46,6 +46,7 @@
         border-radius: 50px; /* Input redondo */
         margin-bottom: 1.5rem;
         outline: none;
+        background-color: white; /* Asegura consistencia visual */
     }
 
     .btn-reserva {
@@ -85,16 +86,31 @@
 
         <div class="specialist-info">
             <i class="fas fa-user-md"></i>
-            <span><strong>Especialista:</strong> {{ servicio.specialist|default:"Personal certificado" }}</span>
+            <span><strong>Equipo de atención:</strong> Personal certificado disponible</span>
         </div>
 
         {% if user.is_authenticated %}
         <form method="POST" style="display: flex; flex-direction: column; gap: 0.5rem; margin-top: 1.5rem;">
             {% csrf_token %}
+            
+            <label style="font-size: 0.7rem; font-weight: 700; margin-left: 1rem; color: var(--rain-boots);">SELECCIONA TU ESPECIALISTA</label>
+            <select name="specialist" id="id_especialista" class="input-nautilus" required>
+                <option value="" disabled selected>-- Elige con quién agendar --</option>
+                {% for specialist in servicio.specialists.all %}
+                    <option value="{{ specialist.id }}">{{ specialist.name }}</option>
+                {% empty %}
+                    <option value="" disabled>No hay especialistas asignados a este servicio</option>
+                {% endfor %}
+            </select>
+
             <label style="font-size: 0.7rem; font-weight: 700; margin-left: 1rem; color: var(--rain-boots);">FECHA DE RESERVA</label>
-            <input type="date" name="date" class="input-nautilus" required>
+            <input type="date" name="date" id="id_fecha_reserva" class="input-nautilus" required disabled>
+            
             <label style="font-size: 0.7rem; font-weight: 700; margin-left: 1rem; color: var(--rain-boots);">HORA DE RESERVA</label>
-            <input type="time" name="time" class="input-nautilus" required>
+            <select name="time" id="id_hora_reserva" class="input-nautilus" required disabled>
+                <option value="">Seleccione primero un especialista y una fecha...</option>
+            </select>
+            
             <button type="submit" class="btn-reserva">Confirmar y Reservar</button>
         </form>
         {% else %}
@@ -104,4 +120,95 @@
         <a href="{% url 'home' %}" class="back-link">← Volver al catálogo</a>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const specialistSelect = document.getElementById('id_especialista');
+    const dateInput = document.getElementById('id_fecha_reserva');
+    const timeSelect = document.getElementById('id_hora_reserva');
+
+    if (specialistSelect && dateInput && timeSelect) {
+        // Establecer la fecha mínima como el día de hoy
+        const hoy = new Date().toISOString().split('T')[0];
+        dateInput.setAttribute('min', hoy);
+
+        // Controlar el flujo: No se puede elegir fecha sin antes elegir especialista
+        specialistSelect.addEventListener('change', function() {
+            if (this.value) {
+                dateInput.disabled = false;
+                // Si ya había una fecha seleccionada previamente, disparar la consulta de horas
+                if (dateInput.value) {
+                     consultarHorarios();
+                }
+            } else {
+                dateInput.disabled = true;
+                dateInput.value = '';
+                resetearHoras();
+            }
+        });
+
+        dateInput.addEventListener('change', function() {
+            consultarHorarios();
+        });
+
+        function resetearHoras() {
+            timeSelect.innerHTML = '<option value="">Seleccione primero un especialista y una fecha...</option>';
+            timeSelect.disabled = true;
+        }
+
+        function consultarHorarios() {
+            const fechaSeleccionada = dateInput.value;
+            const especialistaSeleccionado = specialistSelect.value;
+
+            if (!fechaSeleccionada || !especialistaSeleccionado) {
+                resetearHoras();
+                return;
+            }
+
+            timeSelect.disabled = false;
+            timeSelect.innerHTML = '<option value="">Consultando horarios disponibles...</option>';
+
+            const urlBase = "{% url 'obtener_horas_disponibles' servicio_id=servicio.id %}";
+
+            // MODIFICACIÓN 2: Se envía el parámetro del especialista seleccionado en la query string de la petición AJAX
+            fetch(`${urlBase}?fecha=${fechaSeleccionada}&specialist_id=${especialistaSeleccionado}`)
+                .then(response => response.json())
+                .then(data => {
+                    timeSelect.innerHTML = ''; 
+
+                    if (data.mensaje) {
+                        let opt = document.createElement('option');
+                        opt.value = "";
+                        opt.textContent = data.mensaje;
+                        timeSelect.appendChild(opt);
+                        return;
+                    }
+
+                    if (!data.horas || data.horas.length === 0) {
+                        let opt = document.createElement('option');
+                        opt.value = "";
+                        opt.textContent = "No hay bloques disponibles para este especialista en esta fecha";
+                        timeSelect.appendChild(opt);
+                    } else {
+                        let optDefault = document.createElement('option');
+                        optDefault.value = "";
+                        optDefault.textContent = "Seleccione una hora disponible...";
+                        timeSelect.appendChild(optDefault);
+
+                        data.horas.forEach(hora => {
+                            let opt = document.createElement('option');
+                            opt.value = hora;
+                            opt.textContent = hora;
+                            timeSelect.appendChild(opt);
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error al recuperar horarios:', error);
+                    timeSelect.innerHTML = '<option value="">Error en la comunicación con el servidor</option>';
+                });
+        }
+    }
+});
+</script>
 {% endblock %}

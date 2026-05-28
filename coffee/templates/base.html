@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Nautilus SPA</title>
+    <title>SPA Nautilus</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     
     <style>
@@ -25,7 +25,7 @@
             font-family: 'Poppins', sans-serif;
         }
 
-        body {
+        body:not(:has(.full-hero)) {
             padding-top: 100px;
         }
 
@@ -144,7 +144,7 @@
 <body>
 
     <nav class="nav-nautilus">
-        <a href="{% url 'index' %}" class="brand">NAUTILUS</a>
+        <a href="{% url 'index' %}" class="brand">SPA NAUTILUS</a>
         <div class="nav-links">
             <div class="nav-item has-dropdown">
                 <a href="{% url 'home' %}" class="nav-link">Tratamientos</a>

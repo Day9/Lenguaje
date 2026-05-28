@@ -1,0 +1,34 @@
+# =========================================================================
+# CONFIGURACIÓN DE GITIGNORE PARA PROYECTO DJANGO (NAUTILUS)
+# =========================================================================
+
+# 1. Archivos compilados y temporales de Python 
+# -------------------------------------------------------------------------
+# Evita que se suban los archivos binarios que genera Python al ejecutar el código.
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# 2. Entorno Virtual
+# -------------------------------------------------------------------------
+# No queremos incluir las librerías instaladas en el entorno local (env).
+# Git solo debe rastrear el código fuente, no las dependencias de Python.
+env/
+venv/
+ENV/
+.env
+
+# 3. Base de Datos Local
+# -------------------------------------------------------------------------
+# Evita subir la base de datos de desarrollo (SQLite) para no sobreescribir 
+# los datos reales o locales si trabajas en otro entorno.
+*.sqlite3
+db.sqlite3
+
+# 4. Archivos de configuración del Editor e IDEs
+# -------------------------------------------------------------------------
+# Ignora configuraciones específicas de VS Code o sistemas operativos
+.vscode/
+.DS_Store
+Thumbs.db
