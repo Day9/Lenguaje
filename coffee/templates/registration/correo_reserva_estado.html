@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background-color: #f4f7f6;
+            color: #333333;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 30px auto;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+        }
+        .header {
+            background-color: #0f4c5c; /* Tono oceánico oscuro */
+            padding: 30px;
+            text-align: center;
+            color: white;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        .content {
+            padding: 30px;
+            line-height: 1.6;
+        }
+        .greeting {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #0f4c5c;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            font-weight: bold;
+            border-radius: 20px;
+            margin: 15px 0;
+            text-transform: uppercase;
+            font-size: 14px;
+        }
+        .CONFIRMADA {
+            background-color: #e6f4ea;
+            color: #137333;
+            border: 1px solid #c2e7cd;
+        }
+        .RECHAZADA {
+            background-color: #fce8e6;
+            color: #c5221f;
+            border: 1px solid #fad2cf;
+        }
+        .details-box {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .details-row {
+            margin-bottom: 10px;
+            font-size: 15px;
+        }
+        .details-row strong {
+            color: #4a5568;
+        }
+        .footer {
+            background-color: #f1f5f9;
+            padding: 20px;
+            text-align: center;
+            font-size: 12px;
+            color: #718096;
+            border-top: 1px solid #e2e8f0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Spa Nautilus</h1>
+        </div>
+        <div class="content">
+            <div class="greeting">¡Hola, {{ usuario.first_name|default:usuario.username }}!</div>
+            
+            {% if estado == 'CONFIRMADA' %}
+                <p>Nos complace informarte que tu solicitud de reserva ha sido revisada por nuestro equipo y está formalmente **aceptada**.</p>
+                <div class="status-badge CONFIRMADA">Estado: Confirmada</div>
+            {% else %}
+                <p>Lamentamos informarte que en esta ocasión no hemos podido procesar tu solicitud de reserva debido a indisponibilidad de último momento en el bloque solicitado.</p>
+                <div class="status-badge RECHAZADA">Estado: No Disponible / Rechazada</div>
+                <p>Te invitamos a ingresar nuevamente a nuestro portal para seleccionar otro horario o especialista que se adapte a tus necesidades.</p>
+            {% endif %}
+
+            <div class="details-box">
+                <h3 style="margin-top: 0; color: #0f4c5c; font-size: 16px; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px;">Detalles del Servicio:</h3>
+                <div class="details-row"><strong>Tratamiento:</strong> {{ servicio.name }}</div>
+                <div class="details-row"><strong>Fecha:</strong> {{ fecha|date:"d \d\e F \d\e Y" }}</div>
+                <div class="details-row"><strong>Hora asignada:</strong> {{ hora }}</div>
+                {% if especialista %}
+                    <div class="details-row"><strong>Especialista:</strong> {{ especialista.name }}</div>
+                {% endif %}
+            </div>
+            
+            {% if estado == 'CONFIRMADA' %}
+                <p style="margin-top: 25px; font-size: 14px; color: #4a5568;">*Por favor, recuerda asistir 10 minutos antes de tu cita para disfrutar al máximo de tu experiencia de relajación.*</p>
+            {% endif %}
+        </div>
+        <div class="footer">
+            Este es un correo automático enviado por el sistema de reservas de Spa Nautilus.<br>
+            Por favor no respondas directamente a este mensaje.
+        </div>
+    </div>
+</body>
+</html>

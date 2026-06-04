@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Reservas - Spa Nautilus</title>
+    <!-- Font Awesome para los iconos de calendario, reloj y especialista -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #fafafa;
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+        .layout-container {
+            display: flex;
+            justify-content: center;
+            max-width: 900px;
+            width: 100%;
+        }
+
+        /* Tarjeta Principal Unificada (Contenido de Reservas) */
+        .content-card {
+            background: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+            padding: 40px;
+            flex-grow: 1;
+            position: relative;
+        }
+        
+        /* Cabecera del Historial */
+        .card-header-area {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 1px solid #f0f2f5;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+        }
+        .card-title {
+            font-size: 24px;
+            color: #1e3d59;
+            font-weight: 700;
+            margin: 0 0 10px 0;
+        }
+        .card-subtitle {
+            font-size: 14px;
+            color: #8a9cae;
+            margin: 0;
+        }
+
+        /* Contenedor para alinear los botones de acción */
+        .header-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        /* Botón de Volver al Inicio */
+        .btn-home-top {
+            color: #1e3d59;
+            background: none;
+            border: 1px solid #f0f2f5;
+            padding: 8px 16px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 12px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-home-top:hover {
+            background-color: #f4f7f9;
+            border-color: #e2e8f0;
+            transform: translateY(-1px);
+        }
+
+        /* Botón de Cerrar Sesión sutil */
+        .btn-logout-top {
+            color: #c94c4c;
+            background: none;
+            border: 1px solid #fceded;
+            padding: 8px 16px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 12px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-logout-top:hover {
+            background-color: #fff5f5;
+            transform: translateY(-1px);
+        }
+
+        /* Bloques de cada Cita Individual */
+        .reserva-item {
+            background: #ffffff;
+            border: 1px solid #f0f2f5;
+            border-radius: 16px;
+            padding: 20px 25px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: box-shadow 0.3s;
+        }
+        .reserva-item:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.02);
+        }
+        .reserva-info h4 {
+            margin: 0 0 8px;
+            font-size: 17px;
+            color: #1e3d59;
+            font-weight: 700;
+        }
+        .reserva-meta {
+            font-size: 13px;
+            color: #8a9cae;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .reserva-meta span i {
+            margin-right: 5px;
+            color: #a0aec0;
+        }
+        
+        /* Badges de Estado */
+        .badge {
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .badge-pendiente {
+            background-color: #fdf5e6;
+            color: #de9b52;
+        }
+        .badge-confirmada {
+            background-color: #e6f7f4;
+            color: #48bb78;
+        }
+        .no-data {
+            text-align: center;
+            color: #8a9cae;
+            padding: 40px 0;
+            font-style: italic;
+        }
+        .btn-catalogo {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 12px 24px;
+            background-color: #1e3d59;
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+<div class="layout-container">
+    <div class="content-card">
+        
+        <!-- Cabecera con título y acciones -->
+        <div class="card-header-area">
+            <div>
+                <h2 class="card-title">Historial de Reservas</h2>
+                <p class="card-subtitle">Gestiona y consulta el estado de tus citas en tiempo real.</p>
+            </div>
+            
+            <!-- Grupo de botones superiores -->
+            <div class="header-actions">
+                <a href="{% url 'home' %}" class="btn-home-top">
+                    <i class="fa-solid fa-house"></i> Volver al Inicio
+                </a>
+                
+                <form action="{% url 'logout' %}" method="post" style="margin: 0;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-logout-top">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar Sesión
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Listado de Reservas -->
+        {% for reserva in reservas %}
+            <div class="reserva-item">
+                <div class="reserva-info">
+                    <h4>{{ reserva.servicio.name }}</h4>
+                    <div class="reserva-meta">
+                        <span><i class="fa-regular fa-calendar-days"></i> {{ reserva.fecha|date:"d \d\e F, Y" }}</span>
+                        <span><i class="fa-regular fa-clock"></i> {{ reserva.hora }}</span>
+                        <span><i class="fa-solid fa-user-doctor"></i> Especialista: {% if reserva.especialista %}{{ reserva.especialista.name }}{% else %}Automático{% endif %}</span>
+                    </div>
+                </div>
+                <div>
+                    {% if reserva.estado == 'PENDIENTE' %}
+                        <span class="badge badge-pendiente">Pendiente</span>
+                    {% else %}
+                        <span class="badge badge-confirmada">Confirmada</span>
+                    {% endif %}
+                </div>
+            </div>
+        {% empty %}
+            <div class="no-data">
+                <p>No tienes citas agendadas en este momento.</p>
+                <a href="{% url 'home' %}" class="btn-catalogo">Explorar Catálogo</a>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+</body>
+</html>

@@ -7,6 +7,11 @@ from django.http import JsonResponse
 from datetime import datetime, timedelta
 from .models import *
 
+# Imports específicos y compatibles con Django 6 para el reset de contraseña
+from django.contrib.auth.views import PasswordResetConfirmView, PasswordResetView
+from django.contrib.auth.forms import PasswordResetForm  # 🌟 IMPORTACIÓN REPARADA AQUÍ
+from django.urls import reverse_lazy
+
 
 def index(request):
     return render(request, 'index.html')
@@ -88,7 +93,7 @@ def detalle_servicio(request, pk):
             estado='PENDIENTE'
         )
         messages.success(request, f"Cita solicitada para {servicio.name}. Queda sujeta a revisión.")
-        return redirect('perfil')
+        return redirect('mis_reservas')  # 🌟 MODIFICADO: Te lleva directo al apartado de tus citas
         
     return render(request, 'detalle.html', {'servicio': servicio})
 
@@ -193,8 +198,15 @@ def especialistas(request):
 
 @login_required
 def perfil(request):
+    """🌟 MODIFICADO: Muestra única y exclusivamente los datos de la cuenta."""
+    return render(request, 'perfil.html')
+
+
+@login_required
+def mis_reservas(request):
+    """🌟 NUEVO: Apartado exclusivo e independiente para listar las citas."""
     reservas = Reserva.objects.filter(usuario=request.user).order_by('-fecha_creacion')
-    return render(request, 'perfil.html', {'reservas': reservas})
+    return render(request, 'mis_reservas.html', {'reservas': reservas})
 
 
 def register(request):
@@ -269,12 +281,10 @@ def logout_view(request):
 
 @login_required
 def book_service(request, pk):
-    # Reutiliza la misma lógica robusta de detalle_servicio
     servicio = get_object_or_404(Servicio, pk=pk)
     if request.method == 'POST':
         fecha = request.POST.get('date')
         hora = request.POST.get('time')
-        # parse date and time similar to detalle_servicio
         fecha_obj = datetime.strptime(fecha, '%Y-%m-%d').date()
         hora_str = (hora or '').strip()
         low = hora_str.lower()
@@ -297,5 +307,45 @@ def book_service(request, pk):
             estado='PENDIENTE'
         )
         messages.success(request, f"Cita solicitada para {servicio.name}. En revisión.")
-        return redirect('perfil')
+        return redirect('mis_reservas')  # 🌟 MODIFICADO: También redirige al apartado independiente
     return render(request, 'book_service.html', {'servicio': servicio})
+
+
+# =====================================================================
+#  🌟 COMPONENTES PERSONALIZADOS PARA CONTROL DE CONTRASEÑAS (DJANGO 6) 🌟
+# =====================================================================
+
+class FormularioResetPasswordHTML(PasswordResetForm):
+    """Fuerza a Django a despachar correos multiparte renderizados con HTML nativo."""
+    def save(self, domain_override=None, subject_template_name=None,
+             email_template_name=None, use_https=False, token_generator=None,
+             from_email=None, request=None, html_email_template_name=None,
+             extra_email_context=None):
+        
+        email_template_name = 'registration/password_reset_email.html'
+        html_email_template_name = 'registration/password_reset_email.html'
+        
+        super().save(
+            domain_override=domain_override,
+            subject_template_name=subject_template_name,
+            email_template_name=email_template_name,
+            use_https=use_https,
+            token_generator=token_generator,
+            from_email=from_email,
+            request=request,
+            html_email_template_name=html_email_template_name,
+            extra_email_context=extra_email_context
+        )
+
+
+class MiPasswordResetView(PasswordResetView):
+    """Vista de inicio de recuperación vinculada al formulario HTML forzado."""
+    template_name = 'reset_password.html'
+    form_class = FormularioResetPasswordHTML
+    success_url = reverse_lazy('password_reset_done')
+
+
+class MiPasswordResetConfirmView(PasswordResetConfirmView):
+    """Vista encargada de procesar el nuevo password ingresado por el usuario."""
+    template_name = 'registration/password_reset_confirm.html'
+    success_url = reverse_lazy('password_reset_complete')

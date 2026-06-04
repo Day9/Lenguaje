@@ -157,8 +157,12 @@
                 <div class="nav-item has-dropdown">
                     <a class="nav-link">Hola, {{ user.first_name|default:user.username }}</a>
                     <div class="dropdown-menu">
+                        <!-- 🔄 RESTAURADO: Apartado de Mi Perfil arriba de Mis Citas -->
                         <a href="{% url 'perfil' %}">Mi Perfil</a>
-                        <a href="#">Mis Citas</a>
+                        
+                        <!-- 🌟 MANTENIDO: Redirección correcta a tus reservas -->
+                        <a href="{% url 'mis_reservas' %}">Mis Citas</a>
+                        
                         <form method="POST" action="{% url 'logout' %}" class="logout-form">
                             {% csrf_token %}
                             <button type="submit">Cerrar Sesión</button>

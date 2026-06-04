@@ -7,7 +7,7 @@ For more information on this file, see
 https://docs.djangoproject.com/en/6.0/topics/settings/
 
 For the full list of settings and their values, see
-https://docs.djangoproject.com/en/6.0/ref/settings/
+https://docs.djangoproject.com/en/6.0/topics/settings/
 """
 
 from pathlib import Path
@@ -104,7 +104,8 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/6.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+# Se cambió a 'es' para que Django te responda en español
+LANGUAGE_CODE = 'es'
 
 TIME_ZONE = 'UTC'
 
@@ -119,3 +120,27 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [BASE_DIR / 'static']
+
+# Default primary key field type
+# https://docs.djangoproject.com/en/6.0/ref/settings/#default-auto-field
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# =====================================================================
+# CONFIGURACIÓN DE CORREO ELECTRÓNICO REAL (SMTP GMAIL)
+# =====================================================================
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+# Tu cuenta de correo real
+EMAIL_HOST_USER = 'spa.nautilus20@gmail.com'
+
+# Tu código secreto de 16 caracteres de Google sin espacios
+EMAIL_HOST_PASSWORD = 'goqgsakrwvpswtbv'
+
+# Forzamos que el remitente sea exactamente tu correo limpio
+DEFAULT_FROM_EMAIL = 'spa.nautilus20@gmail.com'
+SERVER_EMAIL = 'spa.nautilus20@gmail.com'

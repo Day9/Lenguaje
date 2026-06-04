@@ -19,13 +19,72 @@
     </div>
 </header>
 
-<div style="height: 150px;"></div>
+<!-- Contenedor centrado y ajustado -->
+<div class="perfil-viewport-container">
+    <section class="perfil-wrapper">
+        <aside class="sidebar-usuario">
+            <div class="avatar-circulo">
+                {{ user.username|first|upper }}
+            </div>
+            <div class="info-principal">
+                <h2>{{ user.first_name }} {{ user.last_name }}</h2>
+                <p>@{{ user.username }}</p>
+            </div>
+            
+            <nav class="menu-perfil">
+                <a href="{% url 'mis_reservas' %}" class="menu-item">Mis Reservas</a>
+                <form method="POST" action="{% url 'logout' %}" style="margin-top: 1rem;">
+                    {% csrf_token %}
+                    <button type="submit" class="menu-item" style="border: none; background: transparent; cursor: pointer; color: #a94442; padding: 0;">Cerrar Sesión</button>
+                </form>
+            </nav>
+        </aside>
+
+        <div class="contenido-perfil">
+            <h3 class="seccion-titulo">Información de la Cuenta</h3>
+            
+            <div class="dato-grupo">
+                <span class="dato-label">Nombre Completo</span>
+                <div class="dato-valor">{{ user.first_name }} {{ user.last_name }}</div>
+            </div>
+
+            <div class="dato-grupo">
+                <span class="dato-label">Correo Electrónico</span>
+                <div class="dato-valor">{{ user.email }}</div>
+            </div>
+
+            <div class="dato-grupo">
+                <span class="dato-label">Nombre de Usuario</span>
+                <div class="dato-valor">{{ user.username }}</div>
+            </div>
+
+            <div class="dato-grupo">
+                <span class="dato-label">Miembro desde</span>
+                <div class="dato-valor">{{ user.date_joined|date:"d F Y" }}</div>
+            </div>
+
+            <a href="#" class="btn-editar">Editar Perfil</a>
+        </div>
+    </section>
+</div>
 
 <style>
+    /* Estructura para centrar perfectamente todo el bloque en la pantalla */
+    .perfil-viewport-container {
+        display: flex;
+        align-items: center;      /* Centrado vertical */
+        justify-content: center;   /* Centrado horizontal */
+        min-height: 100vh;
+        width: 100%;
+        padding-top: 80px;         /* Ajuste fino para bajar el bloque y compensar el header */
+        box-sizing: border-box;
+    }
+
     .perfil-wrapper {
         max-width: 900px;
+        width: 100%;
         margin: 0 auto;
-        padding: 0 60px;
+        padding: 40px 60px;
         display: grid;
         grid-template-columns: 300px 1fr;
         gap: 3rem;
@@ -147,70 +206,14 @@
     }
 
     @media (max-width: 768px) {
+        .perfil-viewport-container {
+            padding-top: 120px;
+            align-items: flex-start;
+        }
         .perfil-wrapper {
             grid-template-columns: 1fr;
-            padding: 0 20px;
+            padding: 20px;
         }
     }
 </style>
-
-<section class="perfil-wrapper">
-    <aside class="sidebar-usuario">
-        <div class="avatar-circulo">
-            {{ user.username|first|upper }}
-        </div>
-        <div class="info-principal">
-            <h2>{{ user.first_name }} {{ user.last_name }}</h2>
-            <p>@{{ user.username }}</p>
-        </div>
-        
-        <nav class="menu-perfil">
-            <a href="#" class="menu-item">Mis Reservas</a>
-            <form method="POST" action="{% url 'logout' %}" style="margin-top: 1rem;">
-                {% csrf_token %}
-                <button type="submit" class="menu-item" style="border: none; background: transparent; cursor: pointer; color: #a94442; padding: 0;">Cerrar Sesión</button>
-            </form>
-        </nav>
-    </aside>
-
-    <div class="contenido-perfil">
-        <h3 class="seccion-titulo">Información de la Cuenta</h3>
-        
-        <div class="dato-grupo">
-            <span class="dato-label">Nombre Completo</span>
-            <div class="dato-valor">{{ user.first_name }} {{ user.last_name }}</div>
-        </div>
-
-        <div class="dato-grupo">
-            <span class="dato-label">Correo Electrónico</span>
-            <div class="dato-valor">{{ user.email }}</div>
-        </div>
-
-        <div class="dato-grupo">
-            <span class="dato-label">Nombre de Usuario</span>
-            <div class="dato-valor">{{ user.username }}</div>
-        </div>
-
-        <div class="dato-grupo">
-            <span class="dato-label">Miembro desde</span>
-            <div class="dato-valor">{{ user.date_joined|date:"d F Y" }}</div>
-        </div>
-
-        <a href="#" class="btn-editar">Editar Perfil</a>
-
-        <h3 class="seccion-titulo" style="margin-top: 3rem;">Mis Reservas</h3>
-        {% if reservas %}
-            {% for reserva in reservas %}
-                <div style="background: #f8f9fa; padding: 1rem; border-radius: 15px; margin-bottom: 1rem;">
-                    <div><strong>Servicio:</strong> {{ reserva.servicio.name }}</div>
-                    <div><strong>Fecha:</strong> {{ reserva.fecha|date:"d/m/Y" }}</div>
-                    <div><strong>Hora:</strong> {{ reserva.hora|time:"H:i" }}</div>
-                    <div><strong>Estado:</strong> {{ reserva.get_estado_display }}</div>
-                </div>
-            {% endfor %}
-        {% else %}
-            <p style="color: #667085;">No tienes reservas aún.</p>
-        {% endif %}
-    </div>
-</section>
 {% endblock %}

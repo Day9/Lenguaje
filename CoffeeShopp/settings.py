@@ -55,7 +55,7 @@ ROOT_URLCONF = 'CoffeeShopp.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'], # 🌟 SOLUCIONADO: Django ahora buscará tus carpetas personalizadas
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -103,7 +103,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/6.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'es-es' # 🌟 SOLUCIONADO: Todo el ecosistema de auth pasa a Español por defecto
 
 TIME_ZONE = 'UTC'
 
@@ -122,4 +122,17 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'index'
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# =====================================================================
+# CONFIGURACIÓN DE CORREO ELECTRÓNICO REAL (SMTP GMAIL)
+# =====================================================================
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+EMAIL_HOST_USER = 'spa.nautilus20@gmail.com'
+EMAIL_HOST_PASSWORD = 'goqgsakrwvpswtbv'
+
+DEFAULT_FROM_EMAIL = 'spa.nautilus20@gmail.com'
+SERVER_EMAIL = 'spa.nautilus20@gmail.com'
