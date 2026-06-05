@@ -13,7 +13,7 @@ class UserProfileForm(forms.ModelForm):
 class SpecialistForm(forms.ModelForm):
     class Meta:
         model = Specialist
-        fields = ['name', 'last_name', 'available', 'email']
+        fields = ['name', 'available', 'email']
 
 
 class ServicioForm(forms.ModelForm):

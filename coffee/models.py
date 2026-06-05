@@ -21,15 +21,12 @@ class Specialist(models.Model):
     name = models.CharField(max_length=255)
     available = models.BooleanField(default=True)
     email = models.EmailField(null=True, blank=True)
-    last_name = models.CharField(max_length=255, null=True, blank=True)
 
     class Meta:
         verbose_name = 'Specialist'
         verbose_name_plural = 'Specialists'
 
     def __str__(self):
-        if self.last_name:
-            return f"{self.name} {self.last_name}"
         return self.name
 
 
