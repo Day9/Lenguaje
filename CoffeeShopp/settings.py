@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-(+x^%e&n=r($c_5&3bktopbnbr#ix2#ne_773jn@euguc4d)_c
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'testserver']
 
 
 # Application definition
@@ -60,6 +60,7 @@ TEMPLATES = [
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.request',
+                'coffee.context_processors.role_flags',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
@@ -131,8 +132,13 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
-EMAIL_HOST_USER = 'spa.nautilus20@gmail.com'
+EMAIL_HOST_USER = 'spa.sirene20@gmail.com'
 EMAIL_HOST_PASSWORD = 'goqgsakrwvpswtbv'
 
-DEFAULT_FROM_EMAIL = 'spa.nautilus20@gmail.com'
-SERVER_EMAIL = 'spa.nautilus20@gmail.com'
+DEFAULT_FROM_EMAIL = 'spa.sirene20@gmail.com'
+SERVER_EMAIL = 'spa.sirene20@gmail.com'
+# Lista de correos que recibirán copia oculta (BCC) de notificaciones importantes
+NOTIFY_BCC = [
+    # agrega aquí los correos de los administradores, por ejemplo:
+    # 'admin1@example.com', 'admin2@example.com'
+]

@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block content %}
+<div style="max-width:1100px;margin:80px auto;padding:24px;background:#f7fbff;border-radius:14px;border:1px solid #e6f3fb;">
+  <div style="display:flex;align-items:center;justify-content:space-between;">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <a href="{% url 'admin_dashboard' %}" style="text-decoration:none;color:#0f4c5c;font-size:1.2rem;">←</a>
+      <h2 style="color:#0f4c5c;font-family:'Playfair Display', serif;margin:0;">Gestión de Usuarios</h2>
+    </div>
+    <div>
+      <a href="{% url 'admin_dashboard' %}" style="background:#1e6fb8;color:white;padding:8px 12px;border-radius:8px;text-decoration:none;">Volver</a>
+    </div>
+  </div>
+  <table style="width:100%;border-collapse:collapse;margin-top:12px;">
+  <thead style="background:#eaf6ff;color:#0f4c5c;"><tr><th style="padding:10px;text-align:left;">Usuario</th><th>Email</th><th>Grupos</th><th>Acciones</th></tr></thead>
+  <tbody>
+  {% for u in users %}
+  <tr style="border-bottom:1px solid #e6f3fb;">
+  <td style="padding:10px;">{{ u.username }}</td>
+  <td>{{ u.email }}</td>
+  <td>{% for g in u.groups.all %}<span style="background:#e6f0fb;padding:4px 8px;border-radius:6px;margin-right:4px;color:#0f4c5c;">{{ g.name }}</span>{% empty %} - {% endfor %}</td>
+  <td><a href="{% url 'admin_user_edit' u.id %}" style="color:#1e6fb8;">Editar roles</a></td>
+  </tr>
+  {% endfor %}
+  </tbody>
+  </table>
+</div>
+{% endblock %}

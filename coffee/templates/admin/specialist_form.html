@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block content %}
+<div style="max-width:800px;margin:60px auto;padding:22px;background:#f7fbff;border-radius:12px;border:1px solid #e6f3fb;">
+    <div style="display:flex;align-items:center;justify-content:space-between;">
+        <div style="display:flex;align-items:center;gap:12px;">
+            <a href="{% url 'admin_specialists_list' %}" style="text-decoration:none;color:#0f4c5c;font-size:1.2rem;">←</a>
+            <h2 style="color:#0f4c5c;font-family:'Playfair Display', serif;margin:0;">{% if specialist %}Editar{% else %}Agregar{% endif %} Especialista</h2>
+        </div>
+    </div>
+    <form method="post" style="margin-top:12px;">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <div style="margin-top:12px;">
+            <button type="submit" style="background:#0f4c5c;color:white;padding:8px 14px;border-radius:8px;border:none;">Guardar</button>
+            <a href="{% url 'admin_specialists_list' %}" style="margin-left:10px;color:#4a5568;">Cancelar</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

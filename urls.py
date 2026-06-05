@@ -15,25 +15,9 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
-from coffee import views # Importamos las vistas directamente
-
+from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    
-    # 1. EL INDEX
-    path('', views.index, name='index'), 
-    
-    # 2. EL REGISTRO 
-    path('register/', views.register, name='register'),
-    
-    # 3. EL LOGIN
-    path('login/', views.login, name='login'),
-    
-    # 4. EL CATÁLOGO
-    path('catalogo/', views.home, name='home'),
-
-    # 5. EL DETALLE 
-    path('servicio/<int:pk>/', views.detalle_servicio, name='detalle'),
+    path('', include('coffee.urls')),
 ]

@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="admin-card">
+  <div class="admin-header">
+    <h2 class="admin-title">Resumen de Reservas</h2>
+  </div>
+  <div style="margin-top:12px;">
+    <div style="display:flex;gap:12px;flex-wrap:wrap;">
+      {% for c in conteos %}
+        <div style="background:#fff;border:1px solid #e6f3fb;padding:12px;border-radius:10px;min-width:140px;">
+          <div class="admin-subtle">{{ c.estado }}</div>
+          <div style="font-size:1.6rem;color:#0f4c5c;font-weight:700;margin-top:6px;">{{ c.total }}</div>
+        </div>
+      {% endfor %}
+    </div>
+    {% if chart_base64 %}
+      <div style="margin-top:18px;background:#fff;padding:12px;border:1px solid #e6f3fb;border-radius:10px;">
+        <h3 style="margin:0 0 8px 0;color:#0f4c5c;">Gráfica: Reservas por fecha</h3>
+        <img src="data:image/png;base64,{{ chart_base64 }}" alt="Reservas por fecha" style="max-width:100%;height:auto;border-radius:6px;" />
+      </div>
+    {% endif %}
+
+    {% if reservas_por_fecha %}
+      <div style="margin-top:18px;background:#fff;padding:12px;border:1px solid #e6f3fb;border-radius:10px;">
+        <h3 style="margin:0 0 8px 0;color:#0f4c5c;">Detalle por fecha</h3>
+        <table style="width:100%;border-collapse:collapse;">
+          <thead style="background:#f1f9ff;color:#0f4c5c;"><tr><th style="padding:8px;text-align:left;">Fecha</th><th style="padding:8px;text-align:left;">Reservas</th></tr></thead>
+          <tbody>
+            {% for r in reservas_por_fecha %}
+              <tr><td style="padding:8px;border-top:1px solid #eef6fb;">{{ r.fecha }}</td><td style="padding:8px;border-top:1px solid #eef6fb;">{{ r.total }}</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

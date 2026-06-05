@@ -6,11 +6,33 @@ from django.contrib import messages
 from django.http import JsonResponse
 from datetime import datetime, timedelta
 from .models import *
+from django.contrib.auth.models import Group
+from django.contrib.auth.decorators import user_passes_test
+from functools import wraps
+from django.core.exceptions import PermissionDenied
+from django.views.decorators.http import require_POST
 
 # Imports específicos y compatibles con Django 6 para el reset de contraseña
 from django.contrib.auth.views import PasswordResetConfirmView, PasswordResetView
 from django.contrib.auth.forms import PasswordResetForm  # 🌟 IMPORTACIÓN REPARADA AQUÍ
 from django.urls import reverse_lazy
+from django.urls import reverse
+from django.core.mail import EmailMultiAlternatives
+from .forms import SpecialistForm, ServicioForm, HorarioTrabajoForm
+from .forms import UserProfileForm
+from django.db.models import Count
+from django.http import HttpResponse
+from django.contrib.auth.models import User
+
+def staff_required(view_func):
+    from functools import wraps
+    from django.core.exceptions import PermissionDenied
+    @wraps(view_func)
+    def _wrapped(request, *args, **kwargs):
+        if not request.user.is_authenticated or not request.user.is_staff:
+            raise PermissionDenied
+        return view_func(request, *args, **kwargs)
+    return _wrapped
 
 
 def index(request):
@@ -33,6 +55,10 @@ def detalle_servicio(request, pk):
     servicio = get_object_or_404(Servicio, pk=pk)
     
     if request.method == 'POST' and request.user.is_authenticated:
+        # No permitir que usuarios administradores (staff/superuser) creen reservas
+        if request.user.is_staff or request.user.is_superuser:
+            messages.error(request, "Las cuentas de administrador no pueden crear reservas. Usa una cuenta de cliente.")
+            return redirect('home')
         fecha = request.POST.get('date')
         hora = request.POST.get('time')
         specialist_id = request.POST.get('specialist')
@@ -203,6 +229,20 @@ def perfil(request):
 
 
 @login_required
+def editar_perfil(request):
+    user = request.user
+    if request.method == 'POST':
+        form = UserProfileForm(request.POST, instance=user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Perfil actualizado correctamente.')
+            return redirect('perfil')
+    else:
+        form = UserProfileForm(instance=user)
+    return render(request, 'perfil_edit.html', {'form': form})
+
+
+@login_required
 def mis_reservas(request):
     """🌟 NUEVO: Apartado exclusivo e independiente para listar las citas."""
     reservas = Reserva.objects.filter(usuario=request.user).order_by('-fecha_creacion')
@@ -211,6 +251,10 @@ def mis_reservas(request):
 
 def register(request):
     if request.method == 'POST':
+        # Bloquear a administradores para que no puedan reservar
+        if request.user.is_staff or getattr(request.user, 'is_superuser', False):
+            messages.error(request, "Las cuentas de administrador no pueden crear reservas. Usa una cuenta de cliente.")
+            return redirect('home')
         first_name = (request.POST.get('first_name') or '').strip()
         last_name = (request.POST.get('last_name') or '').strip()
         username = (request.POST.get('username') or '').strip()
@@ -349,3 +393,376 @@ class MiPasswordResetConfirmView(PasswordResetConfirmView):
     """Vista encargada de procesar el nuevo password ingresado por el usuario."""
     template_name = 'registration/password_reset_confirm.html'
     success_url = reverse_lazy('password_reset_complete')
+
+
+# -------------------------
+# Role helpers & dashboards
+# -------------------------
+
+def in_group(user, group_name):
+    if not user or not user.is_authenticated:
+        return False
+    if user.is_superuser:
+        return True
+    return user.groups.filter(name=group_name).exists()
+
+def group_required(group_name):
+    return user_passes_test(lambda u: in_group(u, group_name))
+
+
+def recepcionista_required(view_func):
+    """Permite acceso solo a `is_staff` o miembros del grupo 'recepcionista' (case-insensitive).
+    Lanza PermissionDenied (403) si no tiene acceso.
+    """
+    @wraps(view_func)
+    def _wrapped(request, *args, **kwargs):
+        user = request.user
+        if not user or not user.is_authenticated:
+            raise PermissionDenied
+        if user.is_staff:
+            return view_func(request, *args, **kwargs)
+        # comprobar nombres comunes en inglés/español
+        groups = [g.lower() for g in user.groups.values_list('name', flat=True)]
+        if 'recepcionista' in groups or 'receptionist' in groups:
+            return view_func(request, *args, **kwargs)
+        raise PermissionDenied
+    return _wrapped
+
+
+@login_required
+@group_required('Receptionist')
+def reception_dashboard(request):
+    """Panel para recepcionistas: ver y gestionar reservas pendientes."""
+    reservas = Reserva.objects.filter(estado='PENDIENTE').order_by('fecha', 'hora')
+    return render(request, 'reception_dashboard.html', {'reservas': reservas})
+
+
+@login_required
+@recepcionista_required
+def aprobar_reserva(request, reserva_id):
+    """Aprobar una reserva (solo POST). Cambia estado 'PENDIENTE' -> 'APROBADO'."""
+    if request.method != 'POST':
+        raise PermissionDenied
+    reserva = get_object_or_404(Reserva, pk=reserva_id)
+    if reserva.estado != 'PENDIENTE':
+        messages.error(request, 'La reserva no está en estado PENDIENTE.')
+        return redirect('reception_dashboard')
+    reserva.estado = 'APROBADO'
+    reserva.save()
+    messages.success(request, 'Reserva aprobada correctamente.')
+    return redirect('reception_dashboard')
+
+
+@login_required
+@staff_required
+def admin_dashboard(request):
+    """Panel para el admin superior: visualizar reservas y resumen estadístico."""
+    servicios = Servicio.objects.all().order_by('name')
+    especialistas = Specialist.objects.all().order_by('name')
+    reservas = Reserva.objects.all()
+    # Conteo por estado
+    conteos = Reserva.objects.values('estado').annotate(total=Count('id'))
+    conteo_dict = {c['estado']: c['total'] for c in conteos}
+    return render(request, 'admin_dashboard.html', {
+        'servicios': servicios,
+        'especialistas': especialistas,
+        'reservas': reservas,
+        'conteos': conteo_dict,
+    })
+
+
+@login_required
+@group_required('AdminSuperior')
+def admin_specialists_list(request):
+    specialists = Specialist.objects.all().order_by('name')
+    return render(request, 'admin/specialists_list.html', {'specialists': specialists})
+
+
+@login_required
+@group_required('AdminSuperior')
+def admin_specialist_create(request):
+    if request.method == 'POST':
+        form = SpecialistForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Especialista creado.')
+            return redirect('admin_specialists_list')
+    else:
+        form = SpecialistForm()
+    return render(request, 'admin/specialist_form.html', {'form': form})
+
+
+@login_required
+@group_required('AdminSuperior')
+def admin_specialist_edit(request, pk):
+    spec = get_object_or_404(Specialist, pk=pk)
+    if request.method == 'POST':
+        form = SpecialistForm(request.POST, instance=spec)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Especialista actualizado.')
+            return redirect('admin_specialists_list')
+    else:
+        form = SpecialistForm(instance=spec)
+    return render(request, 'admin/specialist_form.html', {'form': form, 'specialist': spec})
+
+
+@login_required
+@group_required('AdminSuperior')
+def admin_specialist_delete(request, pk):
+    spec = get_object_or_404(Specialist, pk=pk)
+    if request.method == 'POST':
+        spec.delete()
+        messages.success(request, 'Especialista eliminado.')
+        return redirect('admin_specialists_list')
+    return render(request, 'admin/specialist_confirm_delete.html', {'specialist': spec})
+
+
+@login_required
+@group_required('AdminSuperior')
+def admin_services_list(request):
+    servicios = Servicio.objects.all().order_by('name')
+    return render(request, 'admin/services_list.html', {'servicios': servicios})
+
+
+@login_required
+@group_required('AdminSuperior')
+def admin_service_create(request):
+    if request.method == 'POST':
+        form = ServicioForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Servicio creado.')
+            return redirect('admin_services_list')
+    else:
+        form = ServicioForm()
+    return render(request, 'admin/service_form.html', {'form': form})
+
+
+@login_required
+@group_required('AdminSuperior')
+def admin_service_edit(request, pk):
+    serv = get_object_or_404(Servicio, pk=pk)
+    if request.method == 'POST':
+        form = ServicioForm(request.POST, instance=serv)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Servicio actualizado.')
+            return redirect('admin_services_list')
+    else:
+        form = ServicioForm(instance=serv)
+    return render(request, 'admin/service_form.html', {'form': form, 'servicio': serv})
+
+
+@login_required
+@group_required('AdminSuperior')
+def admin_service_delete(request, pk):
+    serv = get_object_or_404(Servicio, pk=pk)
+    if request.method == 'POST':
+        serv.delete()
+        messages.success(request, 'Servicio eliminado.')
+        return redirect('admin_services_list')
+    return render(request, 'admin/service_confirm_delete.html', {'servicio': serv})
+
+
+@login_required
+@group_required('AdminSuperior')
+def admin_horarios_list(request):
+    horarios = HorarioTrabajo.objects.all().order_by('dia_semana')
+    return render(request, 'admin/horarios_list.html', {'horarios': horarios})
+
+
+@login_required
+@group_required('AdminSuperior')
+def admin_horario_create(request):
+    if request.method == 'POST':
+        form = HorarioTrabajoForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Horario creado.')
+            return redirect('admin_horarios_list')
+    else:
+        form = HorarioTrabajoForm()
+    return render(request, 'admin/horario_form.html', {'form': form})
+
+
+@login_required
+@group_required('AdminSuperior')
+def admin_horario_edit(request, pk):
+    h = get_object_or_404(HorarioTrabajo, pk=pk)
+    if request.method == 'POST':
+        form = HorarioTrabajoForm(request.POST, instance=h)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Horario actualizado.')
+            return redirect('admin_horarios_list')
+    else:
+        form = HorarioTrabajoForm(instance=h)
+    return render(request, 'admin/horario_form.html', {'form': form, 'horario': h})
+
+
+@login_required
+@group_required('AdminSuperior')
+def admin_horario_delete(request, pk):
+    h = get_object_or_404(HorarioTrabajo, pk=pk)
+    if request.method == 'POST':
+        h.delete()
+        messages.success(request, 'Horario eliminado.')
+        return redirect('admin_horarios_list')
+    return render(request, 'admin/horario_confirm_delete.html', {'horario': h})
+
+
+@login_required
+@group_required('AdminSuperior')
+def admin_reservas_list(request):
+    # Mostrar resumen (balance) de reservas para AdminSuperior. Las acciones
+    # de aceptar/denegar se realizan desde el panel de Recepción.
+    conteos = Reserva.objects.values('estado').annotate(total=Count('id'))
+    return render(request, 'admin/reservas_summary.html', {'conteos': conteos})
+
+
+@login_required
+@staff_required
+def admin_resumen_pdf(request):
+    """Genera un resumen estadístico de reservas y devuelve PDF (si está instalado xhtml2pdf).
+    Si no está instalado, devuelve la vista HTML como fallback.
+    """
+    # Conteo por estado
+    conteos = Reserva.objects.values('estado').annotate(total=Count('id'))
+    # Conteo por fecha (para la gráfica)
+    reservas_por_fecha = Reserva.objects.values('fecha').annotate(total=Count('id')).order_by('fecha')
+    contexto = {'conteos': conteos, 'reservas_por_fecha': reservas_por_fecha}
+
+    # Intentar generar una gráfica PNG en memoria con matplotlib y pasarla al template como base64
+    try:
+        import matplotlib
+        matplotlib.use('Agg')
+        import matplotlib.pyplot as plt
+        import base64
+        from io import BytesIO
+
+        fechas = [r['fecha'].strftime('%Y-%m-%d') for r in reservas_por_fecha]
+        totales = [r['total'] for r in reservas_por_fecha]
+
+        if fechas:
+            fig, ax = plt.subplots(figsize=(max(4, len(fechas) * 0.6), 3))
+            ax.bar(fechas, totales, color='#1e6fb8')
+            ax.set_xlabel('Fecha')
+            ax.set_ylabel('Reservas')
+            ax.set_title('Reservas por fecha')
+            plt.xticks(rotation=45, ha='right')
+            plt.tight_layout()
+            buf = BytesIO()
+            fig.savefig(buf, format='png', dpi=150)
+            plt.close(fig)
+            buf.seek(0)
+            contexto['chart_base64'] = base64.b64encode(buf.getvalue()).decode('utf-8')
+    except Exception:
+        # matplotlib no disponible o fallo al generar la imagen: seguimos sin la gráfica
+        pass
+
+    # Render HTML fallback (para navegador)
+    html = render(request, 'admin/resumen_pdf.html', contexto)
+
+    # Para generar PDF con xhtml2pdf usamos una plantilla simplificada
+    try:
+        from django.template.loader import render_to_string
+        from xhtml2pdf import pisa
+        from io import BytesIO
+
+        pdf_html = render_to_string('admin/resumen_pdf_pdf.html', contexto)
+        pdf_io = BytesIO()
+        pisa_status = pisa.CreatePDF(pdf_html.encode('utf-8'), dest=pdf_io)
+        if pisa_status.err:
+            return HttpResponse('Error generando PDF', status=500)
+        pdf_io.seek(0)
+        return HttpResponse(pdf_io.read(), content_type='application/pdf')
+    except Exception:
+        # Fallback: mostrar HTML
+        return html
+
+
+@login_required
+@staff_required
+def admin_users_list(request):
+    # Gestión de usuarios personalizada deshabilitada. Redirigir al Django admin
+    try:
+        admin_url = reverse('admin:auth_user_changelist')
+    except Exception:
+        admin_url = '/admin/auth/user/'
+    return redirect(admin_url)
+
+
+@login_required
+@staff_required
+def admin_user_edit(request, pk):
+    # Redirigir al Django admin para edición de usuarios
+    try:
+        admin_url = reverse('admin:auth_user_change', args=[pk])
+    except Exception:
+        admin_url = f'/admin/auth/user/{pk}/change/'
+    return redirect(admin_url)
+
+
+@login_required
+@group_required('Receptionist')
+def cambiar_estado_reserva(request, pk):
+    """Endpoint para que la recepcion pueda confirmar/rechazar reservas.
+    AdminSuperior también puede usar el admin tradicional en /admin/.
+    """
+    reserva = get_object_or_404(Reserva, pk=pk)
+    if request.method == 'POST':
+        nuevo = request.POST.get('estado')
+        if nuevo in ['CONFIRMADA', 'RECHAZADA', 'PENDIENTE']:
+            reserva.estado = nuevo
+            reserva.save()
+            messages.success(request, f'Reserva actualizada a {nuevo}')
+        else:
+            messages.error(request, 'Estado inválido')
+    return redirect('reception_dashboard')
+
+
+def tratamiento_purificante(request):
+    """Página pública que describe el tratamiento purificante solicitado."""
+    descripcion = (
+        "Un tratamiento purificante que aprovecha las propiedades remineralizantes de las algas "
+        "para desintoxicar el cuerpo y mejorar la salud de la piel. Es una experiencia profunda "
+        "que combina el bienestar físico con una renovación cutánea completa."
+    )
+    return render(request, 'tratamiento_purificante.html', {'descripcion': descripcion})
+
+
+def specialist_respond(request, pk, token):
+    """Procesa la respuesta del especialista mediante token en el correo."""
+    reserva = get_object_or_404(Reserva, pk=pk)
+    try:
+        token_val = str(token)
+    except Exception:
+        token_val = None
+
+    if str(reserva.specialist_token) != token_val:
+        return render(request, 'specialist_response.html', {'ok': False, 'msg': 'Token inválido o caducado.'})
+
+    accion = request.GET.get('action')
+    if accion == 'accept':
+        reserva.specialist_response = 'ACEPTADA'
+        reserva.save()
+        msg = 'Has aceptado la reserva. El recepcionista finalizará el estado.'
+    elif accion == 'reject':
+        reserva.specialist_response = 'RECHAZADA'
+        reserva.save()
+        msg = 'Has rechazado la reserva. El recepcionista será notificado.'
+    else:
+        return render(request, 'specialist_response.html', {'ok': False, 'msg': 'Acción inválida.'})
+
+    # Notificar al correo de recepción (DEFAULT_FROM_EMAIL) que el especialista respondió
+    try:
+        asunto = f"Respuesta del especialista para reserva {reserva.id}"
+        cuerpo = f"El especialista ha respondido: {reserva.specialist_response} para la reserva {reserva.servicio.name} el {reserva.fecha} a las {reserva.hora}."
+        bcc = getattr(settings, 'NOTIFY_BCC', []) or None
+        msg = EmailMultiAlternatives(subject=asunto, body=cuerpo, from_email=settings.DEFAULT_FROM_EMAIL, to=[settings.DEFAULT_FROM_EMAIL], bcc=bcc)
+        msg.send(fail_silently=True)
+    except Exception as e:
+        print('Error notificando a recepción:', e)
+
+    return render(request, 'specialist_response.html', {'ok': True, 'msg': msg})

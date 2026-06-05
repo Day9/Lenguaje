@@ -141,3 +141,47 @@ h1 {
 @media (max-width: 480px) {
     .name-row { flex-direction: column; gap: 0; }
 }
+
+/* Admin panel styles */
+.admin-card {
+        max-width: 1100px;
+        margin: 60px auto;
+        padding: 20px;
+        background: #f7fbff;
+        border-radius: 12px;
+        border: 1px solid #e6f3fb;
+}
+.admin-header { display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px; }
+.admin-title { color:#0f4c5c;font-family:'Playfair Display', serif;font-size:1.6rem;margin:0; }
+.admin-actions a { margin-left:8px; }
+.btn-primary { background:#0f4c5c;color:white;padding:8px 12px;border-radius:8px;text-decoration:none;display:inline-block }
+.btn-accent { background:#1e6fb8;color:white;padding:8px 12px;border-radius:8px;text-decoration:none;display:inline-block }
+.btn-outline { background:#fff;border:1px solid #1e6fb8;color:#1e6fb8;padding:6px 10px;border-radius:8px;text-decoration:none }
+.btn-danger { background:#fff;border:1px solid #d04b4b;color:#d04b4b;padding:6px 10px;border-radius:8px;text-decoration:none }
+.back-link { text-decoration:none;color:#0f4c5c;font-size:1.1rem;margin-right:12px }
+.admin-list-row { padding:12px;border-bottom:1px solid #e6f3fb;display:flex;justify-content:space-between;align-items:center }
+.admin-subtle { color:#4a5568;font-size:0.95rem }
+.table-admin { width:100%;border-collapse:collapse;margin-top:12px }
+.table-admin thead { background:#eaf6ff;color:#0f4c5c }
+.table-admin th, .table-admin td { padding:10px;text-align:left }
+.badge-soft { padding:6px 10px;border-radius:8px;background:#e6f0fb;color:#0f4c5c }
+
+@media (max-width: 800px) {
+    .admin-card { padding:12px;margin:36px 12px }
+}
+
+/* Responsive table -> stack rows into cards on small screens */
+@media (max-width: 640px) {
+    .table-admin { display:block; width:100%; }
+    .table-admin thead { display:none }
+    .table-admin tbody, .table-admin tr { display:block; }
+    .table-admin tr { margin-bottom:12px; border:1px solid #e6f3fb; border-radius:10px; padding:12px; }
+    .table-admin td { display:block; padding:6px 0; }
+}
+
+/* Small tweaks for admin cards/buttons responsiveness */
+@media (max-width: 480px) {
+    .admin-header { flex-direction:column; align-items:flex-start; gap:8px }
+    .admin-actions { width:100%; display:flex; gap:8px; }
+    .btn-primary, .btn-accent { padding:10px 12px; font-size:0.95rem }
+}

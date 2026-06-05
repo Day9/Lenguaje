@@ -3,15 +3,24 @@ from django.contrib.auth.models import User
 from datetime import datetime, timedelta
 
 # Importaciones necesarias para el envío automatizado de correos
-from django.core.mail import send_mail
+from django.core.mail import send_mail, EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.conf import settings
+import uuid
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.db import transaction
+import threading
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class Specialist(models.Model):
     name = models.CharField(max_length=255)
     available = models.BooleanField(default=True)
+    email = models.EmailField(null=True, blank=True)
 
     class Meta:
         verbose_name = 'Specialist'
@@ -77,6 +86,10 @@ class Reserva(models.Model):
     fecha = models.DateField()
     hora = models.TimeField()
     estado = models.CharField(max_length=20, choices=ESTADO_CHOICES, default='PENDIENTE')
+    # Respuesta inicial del especialista (no es el estado final que marca la recepción)
+    specialist_response = models.CharField(max_length=20, choices=[('PENDIENTE','Pendiente'),('ACEPTADA','Aceptada'),('RECHAZADA','Rechazada')], default='PENDIENTE')
+    # Token seguro para que el especialista confirme/rechace sin autenticación web
+    specialist_token = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     fecha_creacion = models.DateTimeField(auto_now_add=True)
 
     @property
@@ -101,38 +114,74 @@ class Reserva(models.Model):
             
             # Se detona únicamente si el administrador cambia el estado actual
             if reserva_previa.estado != self.estado and self.estado in ['CONFIRMADA', 'RECHAZADA']:
+                # Pre-render the email content so it can be sent after DB commit without blocking the request.
+                if self.estado == 'CONFIRMADA':
+                    asunto = "¡Tu cita ha sido CONFIRMADA! 🎉 - Spa Sirene"
+                else:
+                    asunto = "Información sobre tu cita - Spa Sirene"
+
+                contexto = {
+                    'usuario': self.usuario,
+                    'servicio': self.servicio,
+                    'especialista': self.especialista,
+                    'fecha': self.fecha,
+                    'hora': self.hora,
+                    'estado': self.estado,
+                }
+
+                html_message = render_to_string('registration/correo_reserva_estado.html', contexto)
+                plain_message = strip_tags(html_message)
+
+                # Define an async sender that runs after transaction commit
+                def _send_email():
+                    try:
+                        bcc = getattr(settings, 'NOTIFY_BCC', []) or None
+                        msg = EmailMultiAlternatives(subject=asunto, body=plain_message, from_email=settings.DEFAULT_FROM_EMAIL, to=[self.usuario.email], bcc=bcc)
+                        msg.attach_alternative(html_message, "text/html")
+                        msg.send(fail_silently=True)
+                        logger.info('Correo de estado enviado a %s para reserva %s', self.usuario.email, self.pk)
+                    except Exception as e:
+                        logger.exception('Error enviando correo de estado para reserva %s: %s', self.pk, e)
+
+                # Schedule to run after DB transaction commits to avoid sending on rollback
                 try:
-                    # Configuración del asunto dinámico según la respuesta
-                    if self.estado == 'CONFIRMADA':
-                        asunto = "¡Tu cita ha sido CONFIRMADA! 🎉 - Spa Nautilus"
-                    else:
-                        asunto = "Información sobre tu cita - Spa Nautilus"
-
-                    # Diccionario con las variables de la base de datos para la plantilla HTML
-                    contexto = {
-                        'usuario': self.usuario,
-                        'servicio': self.servicio,
-                        'especialista': self.especialista,
-                        'fecha': self.fecha,
-                        'hora': self.hora,
-                        'estado': self.estado,
-                    }
-
-                    # Carga el archivo html que tienes en templates/registration/
-                    html_message = render_to_string('registration/correo_reserva_estado.html', contexto)
-                    plain_message = strip_tags(html_message)  # Respaldo en texto plano
-
-                    # Envío del paquete de correo al usuario
-                    send_mail(
-                        subject=asunto,
-                        message=plain_message,
-                        from_email=settings.DEFAULT_FROM_EMAIL,
-                        recipient_list=[self.usuario.email],
-                        html_message=html_message,
-                        fail_silently=False,
-                    )
+                    transaction.on_commit(lambda: threading.Thread(target=_send_email, daemon=True).start())
                 except Exception as e:
-                    print(f"Error al despachar el correo de notificación: {e}")
+                    logger.exception('No se pudo programar envío de correo post-commit: %s', e)
 
         # Ejecuta el guardado real en la base de datos de Django
         super().save(*args, **kwargs)
+
+
+# Enviar correo al especialista cuando se crea una reserva con especialista asignado
+@receiver(post_save, sender=Reserva)
+def enviar_correo_especialista(sender, instance, created, **kwargs):
+    if not created:
+        return
+
+    if instance.especialista and instance.especialista.email:
+        try:
+            asunto = f"Nueva solicitud de reserva: {instance.servicio.name}"
+            contexto = {
+                'reserva': instance,
+                'url_accept': f"{settings.DEFAULT_FROM_EMAIL}"  # placeholder, se reemplaza en html_message
+            }
+
+            # Construir link explícito con token para aceptar/rechazar
+            base = getattr(settings, 'SITE_BASE_URL', 'http://127.0.0.1:8000')
+            accept_url = f"{base}/spa/reserva/{instance.id}/respond/{instance.specialist_token}/?action=accept"
+            reject_url = f"{base}/spa/reserva/{instance.id}/respond/{instance.specialist_token}/?action=reject"
+
+            html_message = render_to_string('registration/correo_especialista.html', {
+                'reserva': instance,
+                'accept_url': accept_url,
+                'reject_url': reject_url,
+            })
+            plain_message = strip_tags(html_message)
+
+            bcc = getattr(settings, 'NOTIFY_BCC', []) or None
+            msg = EmailMultiAlternatives(subject=asunto, body=plain_message, from_email=settings.DEFAULT_FROM_EMAIL, to=[instance.especialista.email], bcc=bcc)
+            msg.attach_alternative(html_message, "text/html")
+            msg.send(fail_silently=True)
+        except Exception as e:
+            print('Error enviando correo al especialista:', e)

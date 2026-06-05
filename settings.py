@@ -136,11 +136,11 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
 # Tu cuenta de correo real
-EMAIL_HOST_USER = 'spa.nautilus20@gmail.com'
+EMAIL_HOST_USER = 'spa.sirene20@gmail.com'
 
 # Tu código secreto de 16 caracteres de Google sin espacios
 EMAIL_HOST_PASSWORD = 'goqgsakrwvpswtbv'
 
 # Forzamos que el remitente sea exactamente tu correo limpio
-DEFAULT_FROM_EMAIL = 'spa.nautilus20@gmail.com'
-SERVER_EMAIL = 'spa.nautilus20@gmail.com'
+DEFAULT_FROM_EMAIL = 'spa.sirene20@gmail.com'
+SERVER_EMAIL = 'spa.sirene20@gmail.com'

@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+<main style="max-width:700px;margin:120px auto;padding:40px;background:white;border-radius:12px;">
+    {% if ok %}
+        <h2>Respuesta registrada</h2>
+        <p>{{ msg }}</p>
+    {% else %}
+        <h2>Error</h2>
+        <p>{{ msg }}</p>
+    {% endif %}
+</main>
+{% endblock %}

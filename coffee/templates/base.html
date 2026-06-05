@@ -4,9 +4,10 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>SPA Nautilus</title>
+    <title>SPA Sirene</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-    
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
         :root {
             --rain-boots: #334B64;
@@ -29,7 +30,7 @@
             padding-top: 100px;
         }
 
-        .nav-nautilus {
+        .nav-sirene {
             position: absolute;
             top: 0;
             left: 0;
@@ -143,8 +144,8 @@
 </head>
 <body>
 
-    <nav class="nav-nautilus">
-        <a href="{% url 'index' %}" class="brand">SPA NAUTILUS</a>
+    <nav class="nav-sirene">
+        <a href="{% url 'index' %}" class="brand">SPA SIRENE</a>
         <div class="nav-links">
             <div class="nav-item has-dropdown">
                 <a href="{% url 'home' %}" class="nav-link">Tratamientos</a>
@@ -154,6 +155,12 @@
                 </div>
             </div>
             {% if user.is_authenticated %}
+                {% if is_receptionist %}
+                    <a href="{% url 'reception_dashboard' %}" class="nav-link">Recepción</a>
+                {% endif %}
+                {% if is_admin_superior %}
+                    <a href="{% url 'admin_dashboard' %}" class="nav-link">Admin</a>
+                {% endif %}
                 <div class="nav-item has-dropdown">
                     <a class="nav-link">Hola, {{ user.first_name|default:user.username }}</a>
                     <div class="dropdown-menu">

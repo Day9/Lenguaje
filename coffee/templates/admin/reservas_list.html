@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="admin-card">
+  <div class="admin-header">
+    <div style="display:flex;align-items:center;">
+      <a class="back-link" href="{% url 'admin_dashboard' %}">←</a>
+      <h2 class="admin-title" style="font-size:1.3rem;">Reservas</h2>
+    </div>
+    <div class="admin-actions">
+      <a class="btn-primary" href="{% url 'admin_resumen_pdf' %}">Exportar PDF</a>
+      <a class="btn-accent" href="{% url 'admin_dashboard' %}">Volver</a>
+    </div>
+  </div>
+  <table class="table-admin">
+    <thead><tr><th>ID</th><th>Usuario</th><th>Servicio</th><th>Especialista</th><th>Fecha</th><th>Hora</th><th>Estado</th></tr></thead>
+    <tbody>
+    {% for r in reservas %}
+        <tr>
+          <td>{{ r.id }}</td>
+          <td>{{ r.usuario.username }}</td>
+          <td>{{ r.servicio.name }}</td>
+          <td>{% if r.especialista %}{{ r.especialista.name }}{% endif %}</td>
+          <td>{{ r.fecha }}</td>
+          <td>{{ r.hora }}</td>
+          <td><span class="badge-soft">{{ r.estado }}</span></td>
+        </tr>
+    {% empty %}
+        <tr><td colspan="7">No hay reservas.</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

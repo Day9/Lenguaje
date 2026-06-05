@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
 <style>
@@ -30,7 +31,7 @@
         margin: 0 auto;
     }
 
-    .card-nautilus {
+    .card-sirene {
         background: var(--blanco);
         border-radius: 30px;
         overflow: hidden;
@@ -39,7 +40,7 @@
         width: 100%;
     }
 
-    .card-nautilus:hover {
+    .card-sirene:hover {
         transform: translateY(-10px);
     }
 
@@ -100,7 +101,7 @@
     }
 </style>
 
-<div class="page-title">Tratamientos Nautilus</div>
+<div class="page-title">Tratamientos Sirene</div>
 <div class="page-subtitle">Descubre los tratamientos faciales y corporales disponibles. Reserva en un solo clic.</div>
 
 {% if categoria %}
@@ -109,19 +110,21 @@
 
 <section class="grid-servicios">
     {% for c in lista_servicios %}
-    <div class="card-nautilus">
+    <div class="card-sirene">
         <div class="img-wrapper">
-            <img src="{{ c.image }}" alt="{{ c.name }}">
+            <img src="{% static c.image %}" alt="{{ c.name }}">
         </div>
         <div class="card-info">
             <h3><a href="{% url 'detalle' c.id %}" style="color: inherit; text-decoration:none;">{{ c.name }}</a></h3>
             <div style="margin-bottom: 0.75rem; color: #667085; font-size: 0.85rem; letter-spacing: 0.5px; text-transform: uppercase;">{{ c.get_categoria_display }}</div>
             <div class="card-price">${{ c.price }}</div>
             <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
-                {% if user.is_authenticated %}
+                {% if user.is_authenticated and not user.is_staff %}
                     <a href="{% url 'detalle' c.id %}" class="btn-comprar">Reservar</a>
-                {% else %}
+                {% elif not user.is_authenticated %}
                     <a href="{% url 'login' %}?next={% url 'detalle' c.id %}" class="btn-comprar">Reservar</a>
+                {% else %}
+                    <!-- Administradores no pueden reservar; no mostrar botón -->
                 {% endif %}
             </div>
         </div>

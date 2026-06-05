@@ -15,7 +15,7 @@
     
     <div style="display: inline-block !important; text-align: left !important;">
         <span style="font-family: 'Playfair Display', serif; font-size: 1.8rem; color: #2C3E50; letter-spacing: 5px; text-transform: uppercase;">MI PERFIL</span>
-        <span style="font-family: 'Poppins', sans-serif; font-size: 1.8rem; font-weight: 300; color: #D6C8BA; text-transform: uppercase; margin-left: 8px;">NAUTILUS</span>
+        <span style="font-family: 'Poppins', sans-serif; font-size: 1.8rem; font-weight: 300; color: #D6C8BA; text-transform: uppercase; margin-left: 8px;">SIRENE</span>
     </div>
 </header>
 
@@ -32,7 +32,9 @@
             </div>
             
             <nav class="menu-perfil">
-                <a href="{% url 'mis_reservas' %}" class="menu-item">Mis Reservas</a>
+                {% if not user.is_staff and not is_admin_superior %}
+                    <a href="{% url 'mis_reservas' %}" class="menu-item">Mis Reservas</a>
+                {% endif %}
                 <form method="POST" action="{% url 'logout' %}" style="margin-top: 1rem;">
                     {% csrf_token %}
                     <button type="submit" class="menu-item" style="border: none; background: transparent; cursor: pointer; color: #a94442; padding: 0;">Cerrar Sesión</button>
@@ -63,7 +65,7 @@
                 <div class="dato-valor">{{ user.date_joined|date:"d F Y" }}</div>
             </div>
 
-            <a href="#" class="btn-editar">Editar Perfil</a>
+            <a href="{% url 'editar_perfil' %}" class="btn-editar">Editar Perfil</a>
         </div>
     </section>
 </div>

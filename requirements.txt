@@ -1,0 +1,4 @@
+matplotlib
+xhtml2pdf
+Django
+Pillow

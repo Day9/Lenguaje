@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="admin-card">
+    <div class="admin-header">
+        <div style="display:flex;align-items:center;">
+            <a class="back-link" href="{% url 'admin_dashboard' %}">←</a>
+            <h2 class="admin-title" style="font-size:1.2rem;">Horarios de Trabajo</h2>
+        </div>
+        <div class="admin-actions">
+            <a class="btn-primary" href="{% url 'admin_horario_create' %}">Agregar horario</a>
+        </div>
+    </div>
+    <div>
+    {% for h in horarios %}
+        <div class="admin-list-row">
+            <div><strong>{{ h.get_dia_semana_display }}</strong> <div class="admin-subtle">{{ h.hora_inicio }} - {{ h.hora_fin }}</div></div>
+            <div>
+                <a class="btn-outline" href="{% url 'admin_horario_edit' h.id %}">Editar</a>
+                <a class="btn-danger" href="{% url 'admin_horario_delete' h.id %}">Eliminar</a>
+            </div>
+        </div>
+    {% empty %}
+        <div>No hay horarios configurados.</div>
+    {% endfor %}
+    </div>
+</div>
+{% endblock %}

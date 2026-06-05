@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block content %}
+<div style="max-width:700px;margin:80px auto;padding:20px;background:#f7fbff;border-radius:12px;border:1px solid #e6f3fb;">
+  <div style="display:flex;align-items:center;justify-content:space-between;">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <a href="{% url 'admin_users_list' %}" style="text-decoration:none;color:#0f4c5c;font-size:1.2rem;">←</a>
+      <h2 style="color:#0f4c5c;font-family:'Playfair Display', serif;margin:0;">Editar roles de {{ user_obj.username }}</h2>
+    </div>
+    <div>
+      <a href="{% url 'admin_users_list' %}" style="color:#4a5568;text-decoration:none;">Cancelar</a>
+    </div>
+  </div>
+  <form method="post">
+    {% csrf_token %}
+    <div style="margin-top:12px;">
+    {% for g in all_groups %}
+      <label style="display:block;margin-bottom:8px;"><input type="checkbox" name="groups" value="{{ g.name }}" {% if g in user_obj.groups.all %}checked{% endif %}> <span style="margin-left:8px;color:#1e6fb8;">{{ g.name }}</span></label>
+    {% endfor %}
+    </div>
+    <div style="margin-top:16px;">
+      <button type="submit" style="background:#0f4c5c;color:white;padding:8px 14px;border-radius:8px;border:none;">Guardar</button>
+      <a href="{% url 'admin_users_list' %}" style="margin-left:10px;color:#4a5568;">Volver</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

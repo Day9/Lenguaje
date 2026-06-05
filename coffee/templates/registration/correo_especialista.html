@@ -1,0 +1,14 @@
+<!doctype html>
+<html>
+<body>
+    <p>Hola,</p>
+    <p>Se ha solicitado una reserva para el servicio <strong>{{ reserva.servicio.name }}</strong>.</p>
+    <p>Fecha: {{ reserva.fecha }} — Hora: {{ reserva.hora }}</p>
+    <p>Por favor, confirme si aceptas la prestación de este servicio:</p>
+    <p>
+        <a href="{{ accept_url }}">Aceptar esta reserva</a> — 
+        <a href="{{ reject_url }}">Rechazar esta reserva</a>
+    </p>
+    <p>Tras tu respuesta, el recepcionista finalizará el estado y el cliente será notificado.</p>
+</body>
+</html>

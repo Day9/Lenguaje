@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="admin-card">
+    <div class="admin-header">
+        <div style="display:flex;align-items:center;">
+            <a class="back-link" href="{% url 'admin_dashboard' %}">←</a>
+            <h2 class="admin-title" style="font-size:1.2rem;">Servicios</h2>
+        </div>
+        <div class="admin-actions">
+            <a class="btn-primary" href="{% url 'admin_service_create' %}">Agregar servicio</a>
+        </div>
+    </div>
+    <div>
+    {% for s in servicios %}
+        <div class="admin-list-row">
+            <div><strong>{{ s.name }}</strong> <div class="admin-subtle">{{ s.get_categoria_display }} — ${{ s.price }}</div></div>
+            <div>
+                <a class="btn-outline" href="{% url 'admin_service_edit' s.id %}">Editar</a>
+                <a class="btn-danger" href="{% url 'admin_service_delete' s.id %}">Eliminar</a>
+            </div>
+        </div>
+    {% empty %}
+        <div>No hay servicios.</div>
+    {% endfor %}
+    </div>
+</div>
+{% endblock %}
