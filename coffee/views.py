@@ -55,9 +55,9 @@ def detalle_servicio(request, pk):
     servicio = get_object_or_404(Servicio, pk=pk)
     
     if request.method == 'POST' and request.user.is_authenticated:
-        # No permitir que usuarios administradores (staff/superuser) creen reservas
-        if request.user.is_staff or request.user.is_superuser:
-            messages.error(request, "Las cuentas de administrador no pueden crear reservas. Usa una cuenta de cliente.")
+        # No permitir que usuarios administradores (staff/superuser) o recepcionistas creen reservas
+        if request.user.is_staff or request.user.is_superuser or in_group(request.user, 'Receptionist'):
+            messages.error(request, "Esta cuenta no puede crear reservas. Usa una cuenta de cliente.")
             return redirect('home')
         fecha = request.POST.get('date')
         hora = request.POST.get('time')
@@ -245,6 +245,9 @@ def editar_perfil(request):
 @login_required
 def mis_reservas(request):
     """🌟 NUEVO: Apartado exclusivo e independiente para listar las citas."""
+    # Solo usuarios clientes (no staff/admin ni recepcionistas) pueden acceder a sus reservas
+    if request.user.is_staff or getattr(request.user, 'is_superuser', False) or in_group(request.user, 'Receptionist'):
+        raise PermissionDenied
     reservas = Reserva.objects.filter(usuario=request.user).order_by('-fecha_creacion')
     return render(request, 'mis_reservas.html', {'reservas': reservas})
 
@@ -342,6 +345,11 @@ def book_service(request, pk):
                 hora_solicitada = datetime.strptime(hora_str, '%H:%M').time()
             except ValueError:
                 hora_solicitada = datetime.strptime(hora_str, '%I:%M').time()
+
+        # Evitar que recepcionistas o administradores creen reservas
+        if request.user.is_staff or getattr(request.user, 'is_superuser', False) or in_group(request.user, 'Receptionist'):
+            messages.error(request, "Esta cuenta no puede crear reservas. Usa una cuenta de cliente.")
+            return redirect('home')
 
         Reserva.objects.create(
             usuario=request.user,
@@ -447,7 +455,7 @@ def aprobar_reserva(request, reserva_id):
     if reserva.estado != 'PENDIENTE':
         messages.error(request, 'La reserva no está en estado PENDIENTE.')
         return redirect('reception_dashboard')
-    reserva.estado = 'APROBADO'
+    reserva.estado = 'CONFIRMADA'
     reserva.save()
     messages.success(request, 'Reserva aprobada correctamente.')
     return redirect('reception_dashboard')
@@ -722,6 +730,35 @@ def cambiar_estado_reserva(request, pk):
     return redirect('reception_dashboard')
 
 
+@login_required
+@group_required('Receptionist')
+def notify_specialist(request, pk):
+    """Enviar correo manual al especialista asignado para una reserva específica."""
+    reserva = get_object_or_404(Reserva, pk=pk)
+    if not reserva.especialista or not reserva.especialista.email:
+        messages.error(request, 'La reserva no tiene especialista con correo configurado.')
+        return redirect('reception_dashboard')
+
+    try:
+        asunto = f"Estado de reserva: {reserva.estado} - {reserva.servicio.name}"
+        contexto = {
+            'reserva': reserva,
+            'estado': reserva.estado,
+        }
+        # Usamos una plantilla simple que informa el estado actual de la reserva
+        html_message = render_to_string('registration/correo_estado_especialista.html', contexto)
+        plain_message = strip_tags(html_message)
+        bcc = getattr(settings, 'NOTIFY_BCC', []) or None
+        msg = EmailMultiAlternatives(subject=asunto, body=plain_message, from_email=settings.DEFAULT_FROM_EMAIL, to=[reserva.especialista.email], bcc=bcc)
+        msg.attach_alternative(html_message, 'text/html')
+        msg.send(fail_silently=True)
+        messages.success(request, 'Correo de notificación enviado al especialista.')
+    except Exception as e:
+        messages.error(request, f'Error enviando correo: {e}')
+
+    return redirect('reception_dashboard')
+
+
 def tratamiento_purificante(request):
     """Página pública que describe el tratamiento purificante solicitado."""
     descripcion = (
@@ -730,6 +767,42 @@ def tratamiento_purificante(request):
         "que combina el bienestar físico con una renovación cutánea completa."
     )
     return render(request, 'tratamiento_purificante.html', {'descripcion': descripcion})
+
+
+def aviso_legal(request):
+    return render(request, 'aviso_legal.html')
+
+
+def politica_privacidad(request):
+    return render(request, 'politica_privacidad.html')
+
+
+def politica_cookies(request):
+    return render(request, 'politica_cookies.html')
+
+
+def redes_sociales(request):
+    return render(request, 'redes_sociales.html')
+
+
+def terminos(request):
+    return render(request, 'terminos.html')
+
+
+def politica_cancelacion(request):
+    return render(request, 'politica_cancelacion.html')
+
+
+def politica_reservas(request):
+    return render(request, 'politica_reservas.html')
+
+
+def contacto(request):
+    return render(request, 'contacto.html')
+
+
+def normas_convivencia(request):
+    return render(request, 'normas_convivencia.html')
 
 
 def specialist_respond(request, pk, token):

@@ -47,5 +47,16 @@ urlpatterns = [
     path('admin-panel/users/<int:pk>/edit/', views.admin_user_edit, name='admin_user_edit'),
     path('reserva/<int:pk>/cambiar-estado/', views.cambiar_estado_reserva, name='cambiar_estado_reserva'),
     path('tratamiento/purificante/', views.tratamiento_purificante, name='tratamiento_purificante'),
+    # Páginas legales y de contacto
+    path('aviso-legal/', views.aviso_legal, name='aviso_legal'),
+    path('politica-privacidad/', views.politica_privacidad, name='politica_privacidad'),
+    path('politica-cookies/', views.politica_cookies, name='politica_cookies'),
+    path('redes-sociales/', views.redes_sociales, name='redes_sociales'),
+    path('terminos-y-condiciones/', views.terminos, name='terminos'),
+    path('politica-cancelacion/', views.politica_cancelacion, name='politica_cancelacion'),
+    path('politica-reservas/', views.politica_reservas, name='politica_reservas'),
+    path('contacto/', views.contacto, name='contacto'),
+    path('normas-de-convivencia/', views.normas_convivencia, name='normas_convivencia'),
     path('reserva/<int:pk>/respond/<uuid:token>/', views.specialist_respond, name='specialist_respond'),
+    path('reserva/<int:pk>/notify-specialist/', views.notify_specialist, name='notify_specialist'),
 ]

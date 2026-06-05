@@ -617,21 +617,21 @@
         <div class="footer-links-columns">
             <div class="footer-column">
                 <ul>
-                    <li><a href="/spa/home/">Tratamientos</a></li>
-                    <li><a href="#">Aviso Legal</a></li>
-                    <li><a href="#">Política de Privacidad</a></li>
-                    <li><a href="#">Política de Cookies</a></li>
-                    <li><a href="#">Redes Sociales</a></li>
+                    <li><a href="{% url 'home' %}">Tratamientos</a></li>
+                    <li><a href="{% url 'aviso_legal' %}">Aviso Legal</a></li>
+                    <li><a href="{% url 'politica_privacidad' %}">Política de Privacidad</a></li>
+                    <li><a href="{% url 'politica_cookies' %}">Política de Cookies</a></li>
+                    <li><a href="{% url 'redes_sociales' %}">Redes Sociales</a></li>
                 </ul>
             </div>
 
             <div class="footer-column">
                 <ul>
-                    <li><a href="#">Términos y Condiciones</a></li>
-                    <li><a href="#">Política de Cancelación</a></li>
-                    <li><a href="#">Política de Reservas</a></li>
-                    <li><a href="#">Contacto</a></li>
-                    <li><a href="#">Normas de Convivencia</a></li>
+                    <li><a href="{% url 'terminos' %}">Términos y Condiciones</a></li>
+                    <li><a href="{% url 'politica_cancelacion' %}">Política de Cancelación</a></li>
+                    <li><a href="{% url 'politica_reservas' %}">Política de Reservas</a></li>
+                    <li><a href="{% url 'contacto' %}">Contacto</a></li>
+                    <li><a href="{% url 'normas_convivencia' %}">Normas de Convivencia</a></li>
                 </ul>
             </div>
         </div>

@@ -16,9 +16,9 @@
     <p style="margin-top:12px;color:#4a5568;">Reservas pendientes:</p>
     <ul style="margin-top:8px;">
         {% for r in reservas %}
-        <li style="padding:12px 0;border-bottom:1px solid #e6f3fb;display:flex;justify-content:space-between;align-items:center;">
-                <div>{{ r.fecha }} {{ r.hora }} — {{ r.servicio.name }} — Usuario: {{ r.usuario.username }}</div>
-                <div>
+                <li style="padding:12px 0;border-bottom:1px solid #e6f3fb;display:flex;justify-content:space-between;align-items:center;gap:12px;">
+                	<div style="flex:1">{{ r.fecha }} {{ r.hora }} — {{ r.servicio.name }} — Usuario: {{ r.usuario.username }}{% if r.especialista %} — Especialista: {{ r.especialista.name }}{% endif %}</div>
+                	<div style="display:flex;gap:8px;">
                     <form method="post" action="{% url 'cambiar_estado_reserva' r.id %}" style="display:inline-flex;align-items:center;gap:8px;">
                         {% csrf_token %}
                         <select name="estado" style="padding:6px;border:1px solid #dbeafe;border-radius:8px;">
@@ -28,8 +28,12 @@
                         </select>
                         <button type="submit" class="btn-primary">Actualizar</button>
                     </form>
-                </div>
-        </li>
+                    <form method="post" action="{% url 'notify_specialist' r.id %}" style="display:inline-block;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn-outline">Notificar especialista</button>
+                    </form>
+                	</div>
+        	</li>
         {% empty %}
         <li>No hay reservas pendientes.</li>
         {% endfor %}

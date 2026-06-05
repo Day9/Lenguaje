@@ -12,8 +12,13 @@
     </div>
     <div>
     {% for s in specialists %}
-        <div class="admin-list-row">
-            <div><strong>{{ s.name }}</strong> <div class="admin-subtle">{{ s.email }} — {% if s.available %}Disponible{% else %}No disponible{% endif %}</div></div>
+        <div class="admin-list-row" style="align-items:center;gap:12px;">
+            <div style="display:flex;gap:12px;align-items:center;">
+                <div>
+                    <strong>{{ s.name }}{% if s.last_name %} {{ s.last_name }}{% endif %}</strong>
+                    <div class="admin-subtle">{{ s.email }} — {% if s.available %}Disponible{% else %}No disponible{% endif %}</div>
+                </div>
+            </div>
             <div>
                 <a class="btn-outline" href="{% url 'admin_specialist_edit' s.id %}">Editar</a>
                 <a class="btn-danger" href="{% url 'admin_specialist_delete' s.id %}">Eliminar</a>

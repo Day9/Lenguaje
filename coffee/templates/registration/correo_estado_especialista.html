@@ -1,0 +1,7 @@
+<div>
+    <p>Hola {{ reserva.especialista.name }}{% if reserva.especialista.last_name %} {{ reserva.especialista.last_name }}{% endif %},</p>
+    <p>Se ha registrado una reserva para el servicio <strong>{{ reserva.servicio.name }}</strong> el día <strong>{{ reserva.fecha }}</strong> a las <strong>{{ reserva.hora }}</strong>.</p>
+    <p>Estado actual de la reserva: <strong>{{ estado }}</strong></p>
+    <p>Usuario: {{ reserva.usuario.username }} ({{ reserva.usuario.email }})</p>
+    <p>Si necesitas responder o revisar la reserva, consulta el sistema de recepción.</p>
+</div>

@@ -90,7 +90,7 @@
             <span><strong>Equipo de atención:</strong> Personal certificado disponible</span>
         </div>
 
-        {% if user.is_authenticated and not user.is_staff %}
+        {% if user.is_authenticated and not user.is_staff and not is_receptionist %}
         <form method="POST" style="display: flex; flex-direction: column; gap: 0.5rem; margin-top: 1.5rem;">
             {% csrf_token %}
             
@@ -117,6 +117,8 @@
         {% else %}
             {% if user.is_authenticated and user.is_staff %}
                 <p style="color: #c53030; margin-top: 1.5rem;">Las cuentas de administrador no pueden realizar reservas. Usa una cuenta de cliente.</p>
+            {% elif user.is_authenticated and is_receptionist %}
+                <p style="color: #c53030; margin-top: 1.5rem;">Las cuentas de recepción no pueden realizar reservas. Usa una cuenta de cliente.</p>
             {% else %}
                 <p style="color: #667085; margin-top: 1.5rem;">Inicia sesión para reservar este servicio.</p>
             {% endif %}

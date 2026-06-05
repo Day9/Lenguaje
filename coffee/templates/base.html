@@ -167,8 +167,10 @@
                         <!-- 🔄 RESTAURADO: Apartado de Mi Perfil arriba de Mis Citas -->
                         <a href="{% url 'perfil' %}">Mi Perfil</a>
                         
-                        <!-- 🌟 MANTENIDO: Redirección correcta a tus reservas -->
-                        <a href="{% url 'mis_reservas' %}">Mis Citas</a>
+                        <!-- 🌟 MANTENIDO: Redirección correcta a tus reservas (solo clientes) -->
+                        {% if not user.is_staff and not is_receptionist %}
+                            <a href="{% url 'mis_reservas' %}">Mis Citas</a>
+                        {% endif %}
                         
                         <form method="POST" action="{% url 'logout' %}" class="logout-form">
                             {% csrf_token %}
