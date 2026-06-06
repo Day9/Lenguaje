@@ -740,21 +740,26 @@ def notify_specialist(request, pk):
         return redirect('reception_dashboard')
 
     try:
-        asunto = f"Estado de reserva: {reserva.estado} - {reserva.servicio.name}"
+        asunto = f"Reserva pendiente: {reserva.servicio.name} — {reserva.fecha} {reserva.hora}"
         contexto = {
             'reserva': reserva,
             'estado': reserva.estado,
         }
-        # Usamos una plantilla simple que informa el estado actual de la reserva
         html_message = render_to_string('registration/correo_estado_especialista.html', contexto)
         plain_message = strip_tags(html_message)
         bcc = getattr(settings, 'NOTIFY_BCC', []) or None
         msg = EmailMultiAlternatives(subject=asunto, body=plain_message, from_email=settings.DEFAULT_FROM_EMAIL, to=[reserva.especialista.email], bcc=bcc)
         msg.attach_alternative(html_message, 'text/html')
-        msg.send(fail_silently=True)
-        messages.success(request, 'Correo de notificación enviado al especialista.')
+        # No silencie errores: queremos ver excepciones si el envío falla
+        try:
+            msg.send(fail_silently=False)
+            messages.success(request, 'Correo de notificación enviado al especialista.')
+        except Exception as send_err:
+            logger.exception('Error sending notify_specialist email for reserva %s: %s', reserva.pk, send_err)
+            messages.error(request, 'Error enviando correo al especialista (revisa la configuración SMTP).')
     except Exception as e:
-        messages.error(request, f'Error enviando correo: {e}')
+        logger.exception('Unexpected error in notify_specialist for reserva %s: %s', reserva.pk, e)
+        messages.error(request, 'Error interno al preparar el correo.')
 
     return redirect('reception_dashboard')
 
