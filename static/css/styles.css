@@ -130,6 +130,7 @@ h1 {
     transition: 0.3s;
 }
 
+
 .submit-btn:hover { background: #333; transform: translateY(-2px); }
 
 
@@ -151,6 +152,7 @@ h1 {
         border-radius: 12px;
         border: 1px solid #e6f3fb;
 }
+
 .admin-header { display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px; }
 .admin-title { color:#0f4c5c;font-family:'Playfair Display', serif;font-size:1.6rem;margin:0; }
 .admin-actions a { margin-left:8px; }

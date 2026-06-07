@@ -1,27 +1,256 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block content %}
-<div class="admin-card">
-    <div class="admin-header">
-        <div style="display:flex;align-items:center;">
-            <a class="back-link" href="{% url 'admin_dashboard' %}">←</a>
-            <h2 class="admin-title" style="font-size:1.2rem;">Servicios</h2>
+
+<!-- CONTENEDOR PRINCIPAL QUE REPLICA LA RECEPCIÓN -->
+<div class="sirene-recepcion-style-container">
+    
+    <!-- Encabezado con Botón de Acción -->
+    <div class="sirene-panel-header">
+        <div class="header-text-group">
+            <a href="{% url 'admin_dashboard' %}" class="sirene-back-link">
+                ← Servicios
+            </a>
+            <p class="sirene-subtitle">Administra el catálogo de tratamientos, sus precios y categorías asignadas.</p>
         </div>
-        <div class="admin-actions">
-            <a class="btn-primary" href="{% url 'admin_service_create' %}">Agregar servicio</a>
+        <div class="header-action-group">
+            <a href="{% url 'admin_service_create' %}" class="sirene-btn-primary">
+                Agregar servicio
+            </a>
         </div>
     </div>
-    <div>
-    {% for s in servicios %}
-        <div class="admin-list-row">
-            <div><strong>{{ s.name }}</strong> <div class="admin-subtle">{{ s.get_categoria_display }} — ${{ s.price }}</div></div>
-            <div>
-                <a class="btn-outline" href="{% url 'admin_service_edit' s.id %}">Editar</a>
-                <a class="btn-danger" href="{% url 'admin_service_delete' s.id %}">Eliminar</a>
+
+    <hr class="sirene-divider">
+
+    <!-- Listado de Servicios Estilo Tarjetas Apiladas Horizontales -->
+    <div class="sirene-services-list-stack">
+        {% for s in servicios %}
+        <div class="sirene-horizontal-service-card">
+            
+            <!-- Bloque de Información del Servicio -->
+            <div class="service-info-block">
+                <span class="service-category-indicator">
+                    {{ s.categoria }} — ${{ s.precio|default:s.price|default:"0,0" }}
+                </span>
+                <h3 class="service-name-heading">{{ s.name }}</h3>
             </div>
+            
+            <!-- Bloque de Acciones (Editar / Eliminar) -->
+            <div class="service-actions-block">
+                <a href="{% url 'admin_service_edit' s.pk %}" class="sirene-btn-outline btn-edit">
+                    Editar
+                </a>
+                
+                <form action="{% url 'admin_service_delete' s.pk %}" method="POST" style="display:inline;" onsubmit="return confirm('¿Seguro que deseas eliminar este servicio?');">
+                    {% csrf_token %}
+                    <button type="submit" class="sirene-btn-outline btn-delete">
+                        Eliminar
+                    </button>
+                </form>
+            </div>
+
         </div>
-    {% empty %}
-        <div>No hay servicios.</div>
-    {% endfor %}
+        {% empty %}
+        <div class="sirene-empty-state">
+            <p>No hay servicios registrados en el catálogo actualmente.</p>
+        </div>
+        {% endfor %}
     </div>
+
 </div>
+
+<!-- ESTILOS ADAPTADOS AL PANEL DE RECEPCIÓN -->
+<style>
+    /* Caja máster blanca con bordes redondeados y sombra sutil */
+    .sirene-recepcion-style-container {
+        max-width: 1000px;
+        margin: 60px auto;
+        background: #ffffff;
+        border-radius: 24px;
+        box-shadow: 0 10px 35px rgba(0, 0, 0, 0.03);
+        padding: 40px;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    /* Encabezado flex alineado igual al de Recepción */
+    .sirene-panel-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .sirene-back-link {
+        font-family: 'Playfair Display', serif;
+        font-size: 2rem;
+        color: #0f4c5c;
+        font-weight: 700;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .sirene-back-link:hover {
+        opacity: 0.85;
+    }
+
+    .sirene-subtitle {
+        font-size: 0.95rem;
+        color: #667085;
+        margin: 6px 0 0 0;
+    }
+
+    /* Botón Primario Sólido Azul/Verde Oscuro de tu Paleta */
+    .sirene-btn-primary {
+        display: inline-block;
+        background-color: #0f4c5c;
+        color: #ffffff;
+        padding: 12px 24px;
+        border-radius: 50px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: background-color 0.2s ease, transform 0.1s ease;
+        white-space: nowrap;
+    }
+
+    .sirene-btn-primary:hover {
+        background-color: #0b3945;
+        transform: translateY(-1px);
+    }
+
+    .sirene-divider {
+        border: 0;
+        border-top: 1px solid #f2f4f7;
+        margin: 30px 0;
+    }
+
+    /* Estructura de filas apiladas */
+    .sirene-services-list-stack {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    /* Tarjeta Horizontal Individual */
+    .sirene-horizontal-service-card {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: #ffffff;
+        border: 1px solid #f2f4f7;
+        border-radius: 16px;
+        padding: 24px 30px;
+        transition: all 0.2s ease;
+    }
+
+    .sirene-horizontal-service-card:hover {
+        border-color: #e4e7ec;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.015);
+        transform: translateY(-1px);
+    }
+
+    /* Bloque de Textos */
+    .service-category-indicator {
+        font-size: 0.85rem;
+        color: #98a2b3;
+        font-weight: 500;
+        display: block;
+        margin-bottom: 4px;
+    }
+
+    .service-name-heading {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.25rem;
+        color: #0f4c5c;
+        margin: 0;
+        font-weight: 600;
+    }
+
+    /* Bloque de Botones Laterales */
+    .service-actions-block {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    /* Botones de contorno estilizados */
+    .sirene-btn-outline {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 8px 20px;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        text-decoration: none;
+        background: #ffffff;
+        border: 1px solid;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .btn-edit {
+        border-color: #d0d5dd;
+        color: #344054;
+    }
+
+    .btn-edit:hover {
+        background-color: #f9fafb;
+        border-color: #0f4c5c;
+        color: #0f4c5c;
+    }
+
+    .btn-delete {
+        border-color: #fecdca;
+        color: #f04438;
+    }
+
+    .btn-delete:hover {
+        background-color: #fef3f2;
+        border-color: #d92d20;
+        color: #b42318;
+    }
+
+    .sirene-empty-state {
+        text-align: center;
+        padding: 40px 20px;
+        color: #667085;
+        font-style: italic;
+    }
+
+    /* Adaptabilidad Móvil */
+    @media (max-width: 768px) {
+        .sirene-recepcion-style-container {
+            padding: 20px;
+            margin: 20px 10px;
+        }
+
+        .sirene-panel-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .header-action-group {
+            width: 100%;
+        }
+
+        .sirene-btn-primary {
+            width: 100%;
+            text-align: center;
+        }
+
+        .sirene-horizontal-service-card {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .service-actions-block {
+            width: 100%;
+            justify-content: flex-start;
+        }
+    }
+</style>
+
 {% endblock %}

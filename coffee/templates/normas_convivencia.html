@@ -1,7 +1,132 @@
 {% extends 'base.html' %}
+{% load static %}
+
 {% block content %}
-<div style="max-width:900px;margin:80px auto;padding:20px;">
-    <h2>Normas de Convivencia</h2>
-    <p>Reglas para el buen uso del centro y respeto entre usuarios y personal.</p>
+<style>
+    /* Cabecera */
+    .hero-section {
+        background-color: #0f4c5c;
+        padding: 80px 20px;
+        text-align: center;
+        width: 100%;
+    }
+
+    .content-wrapper {
+        max-width: 800px;
+        margin: 60px auto;
+        padding: 0 20px;
+    }
+
+    /* Tarjetas mejoradas con el diseño de círculos */
+    .norma-card {
+        background: #ffffff;
+        padding: 40px;
+        border-radius: 25px;
+        margin-bottom: 30px;
+        border: 1px solid #f0f0f0;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        transition: transform 0.3s ease;
+        display: flex; /* Flex para alinear círculo y texto */
+        align-items: flex-start;
+        gap: 25px;
+    }
+    .norma-card:hover {
+        transform: translateY(-5px);
+    }
+
+    /* Estilo del círculo numerado */
+    .number-circle {
+        background: #fdf5e6; 
+        color: #d4af37;
+        width: 55px;
+        height: 55px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: 'Playfair Display', serif;
+        font-size: 1.5rem;
+        font-weight: bold;
+        flex-shrink: 0; 
+    }
+
+    .norma-card h3 {
+        color: #0f4c5c;
+        font-family: 'Playfair Display', serif;
+        margin-bottom: 10px;
+        margin-top: 5px;
+    }
+    .norma-card p {
+        color: #4a5568;
+        line-height: 1.7;
+    }
+</style>
+
+<!-- Cabecera -->
+<div class="hero-section">
+    <p style="color: #c5b185; text-transform: uppercase; letter-spacing: 3px; font-size: 0.8rem; margin-bottom: 15px;">
+        Sirene Spa & Bienestar
+    </p>
+    <h1 style="color: #ffffff; font-family: 'Playfair Display', serif; font-size: 3.5rem; margin-bottom: 20px;">
+        Normas de Convivencia
+    </h1>
+    <p style="color: #ffffff; font-size: 1.1rem; max-width: 600px; margin: 0 auto; opacity: 0.9;">
+        Bienvenido a nuestro santuario de bienestar. Para garantizar una experiencia excepcional para todos, te invitamos a conocer nuestras normas de convivencia.
+    </p>
+</div>
+
+<!-- Contenido con círculos -->
+<div class="content-wrapper">
+    <div class="norma-card">
+        <div class="number-circle">01</div>
+        <div>
+            <h3>Normas del centro</h3>
+            <p>Un espacio dedicado a la calma absoluta. Mantenemos la armonía en todas nuestras áreas para tu tranquilidad.</p>
+        </div>
+    </div>
+
+    <div class="norma-card">
+        <div class="number-circle">02</div>
+        <div>
+            <h3>Puntualidad</h3>
+            <p>Agradecemos llegar 10 minutos antes de tu cita. Cambios o cancelaciones deben notificarse con 24 horas de antelación.</p>
+        </div>
+    </div>
+
+    <div class="norma-card">
+        <div class="number-circle">03</div>
+        <div>
+            <h3>Respeto al personal</h3>
+            <p>Nuestro equipo es el alma de Sirene. Valoramos un trato cordial, amable y respetuoso en todo momento.</p>
+        </div>
+    </div>
+
+    <div class="norma-card">
+        <div class="number-circle">04</div>
+        <div>
+            <h3>Respeto a las instalaciones</h3>
+            <p>Cuidamos cada detalle para ti; solicitamos el uso correcto de cada área y mobiliario de nuestro spa.</p>
+        </div>
+    </div>
+
+    <div class="norma-card">
+        <div class="number-circle">05</div>
+        <div>
+            <h3>Higiene</h3>
+            <p>Tu bienestar es prioridad. Por favor, notifícanos cualquier condición de salud para personalizar tu experiencia de forma segura.</p>
+        </div>
+    </div>
+
+    <div class="norma-card">
+        <div class="number-circle">06</div>
+        <div>
+            <h3>Ambiente de tranquilidad</h3>
+            <p>Te solicitamos mantener un tono de voz bajo y tus dispositivos electrónicos en modo silencio durante toda tu estancia.</p>
+        </div>
+    </div>
+</div>
+
+<div style="text-align: center; padding: 40px 20px; color: #0f4c5c; font-style: italic; font-family: 'Playfair Display', serif; font-size: 1.3rem; margin-bottom: 40px;">
+    "En Sirene, cada momento está diseñado para tu tranquilidad y renovación."
 </div>
 {% endblock %}

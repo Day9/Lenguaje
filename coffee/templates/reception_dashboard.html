@@ -1,42 +1,308 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-<div style="max-width:900px;margin:60px auto;padding:20px;background:#f7fbff;border-radius:12px;border:1px solid #e6f3fb;">
-    <div style="display:flex;align-items:center;justify-content:space-between;">
-        <div style="display:flex;align-items:center;gap:12px;">
-            <a href="{% url 'admin_dashboard' %}" style="text-decoration:none;color:#0f4c5c;font-size:1.1rem;">←</a>
-            <h2 style="margin:0;color:#0f4c5c;font-family:'Playfair Display', serif;">Panel de Recepción</h2>
+
+<div class="recepcion-viewport-container">
+    <div class="recepcion-card-master">
+        
+        <!-- Encabezado del Panel -->
+        <div class="recepcion-header">
+            <div class="header-titulos">
+                <div class="header-nav-inline">
+                    <a href="{% url 'admin_dashboard' %}" class="btn-regresar-flecha">←</a>
+                    <h2>Panel de Recepción</h2>
+                </div>
+                <p>Gestiona las citas del spa, confirma la asistencia y actualiza estados en tiempo real.</p>
+            </div>
+            <div class="header-acciones">
+                {% if is_admin_superior %}
+                    <a href="{% url 'admin_dashboard' %}" class="btn-admin-link">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 6px; vertical-align: middle;"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                        Ir a Admin
+                    </a>
+                {% endif %}
+            </div>
         </div>
-        <div>
-            {% if is_admin_superior %}
-                <a href="{% url 'admin_dashboard' %}" style="background:#1e6fb8;color:white;padding:8px 12px;border-radius:8px;text-decoration:none;">Ir a Admin</a>
-            {% endif %}
-        </div>
+
+        <h4 class="subtitulo-seccion">Reservas pendientes:</h4>
+
+        <!-- Contenedor de la lista de reservas -->
+        <ul class="lista-reservas-container">
+            {% for r in reservas %}
+            <li class="reserva-item-card">
+                <!-- Info Principal de la Cita -->
+                <div class="reserva-info-main">
+                    <span class="reserva-fecha">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 5px; vertical-align: middle;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                        {{ r.fecha }} {{ r.hora }}
+                    </span>
+                    <h3 class="reserva-servicio-nombre">{{ r.servicio.name }}</h3>
+                    <div class="reserva-usuario-tag">
+                        <span>Usuario:</span> <strong>{{ r.usuario.username }}</strong>
+                    </div>
+                </div>
+
+                <!-- Formulario de Acción Estilizado -->
+                <div class="reserva-accion-form">
+                    <form method="post" action="{% url 'cambiar_estado_reserva' r.id %}">
+                        {% csrf_token %}
+                        <div class="select-custom-wrapper">
+                            <select name="estado">
+                                <option value="PENDIENTE" {% if r.estado == 'PENDIENTE' %}selected{% endif %}>Pendiente</option>
+                                <option value="CONFIRMADA">Confirmar</option>
+                                <option value="RECHAZADA">Rechazar</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn-actualizar-cita">Actualizar</button>
+                    </form>
+                </div>
+            </li>
+            {% empty %}
+            <li class="no-reservas-box">
+                <p>No hay reservas pendientes.</p>
+            </li>
+            {% endfor %}
+        </ul>
+
     </div>
-    <p style="margin-top:12px;color:#4a5568;">Reservas pendientes:</p>
-    <ul style="margin-top:8px;">
-        {% for r in reservas %}
-                <li style="padding:12px 0;border-bottom:1px solid #e6f3fb;display:flex;justify-content:space-between;align-items:center;gap:12px;">
-                	<div style="flex:1">{{ r.fecha }} {{ r.hora }} — {{ r.servicio.name }} — Usuario: {{ r.usuario.username }}{% if r.especialista %} — Especialista: {{ r.especialista.name }}{% endif %}</div>
-                	<div style="display:flex;gap:8px;">
-                    <form method="post" action="{% url 'cambiar_estado_reserva' r.id %}" style="display:inline-flex;align-items:center;gap:8px;">
-                        {% csrf_token %}
-                        <select name="estado" style="padding:6px;border:1px solid #dbeafe;border-radius:8px;">
-                            <option value="PENDIENTE" {% if r.estado == 'PENDIENTE' %}selected{% endif %}>Pendiente</option>
-                            <option value="CONFIRMADA">Confirmar</option>
-                            <option value="RECHAZADA">Rechazar</option>
-                        </select>
-                        <button type="submit" class="btn-primary">Actualizar</button>
-                    </form>
-                    <form method="post" action="{% url 'notify_specialist' r.id %}" style="display:inline-block;">
-                        {% csrf_token %}
-                        <button type="submit" class="btn-outline">Notificar especialista</button>
-                    </form>
-                	</div>
-        	</li>
-        {% empty %}
-        <li>No hay reservas pendientes.</li>
-        {% endfor %}
-    </ul>
 </div>
+
+<style>
+    /* Estructura Base y Centrado en Pantalla */
+    .recepcion-viewport-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        width: 100%;
+        background-color: #fafafa;
+        padding: 120px 20px 60px 20px;
+        box-sizing: border-box;
+    }
+
+    .recepcion-card-master {
+        background: #ffffff;
+        border-radius: 24px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+        padding: 40px;
+        max-width: 900px;
+        width: 100%;
+    }
+
+    /* Encabezado */
+    .recepcion-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        border-bottom: 1px solid #f0f2f5;
+        padding-bottom: 25px;
+        margin-bottom: 30px;
+    }
+
+    .header-nav-inline {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .btn-regresar-flecha {
+        text-decoration: none;
+        color: #0f4c5c;
+        font-size: 1.5rem;
+        line-height: 1;
+        transition: transform 0.2s;
+    }
+
+    .btn-regresar-flecha:hover {
+        transform: translateX(-4px);
+    }
+
+    .header-titulos h2 {
+        font-family: 'Playfair Display', serif;
+        font-size: 2rem;
+        color: #0f4c5c;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .header-titulos p {
+        font-family: 'Poppins', sans-serif;
+        font-size: 0.9rem;
+        color: #667085;
+        margin: 8px 0 0 0;
+    }
+
+    .btn-admin-link {
+        display: inline-flex;
+        align-items: center;
+        background: #1e6fb8;
+        color: white;
+        padding: 10px 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        border-radius: 50px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 10px rgba(30, 111, 184, 0.2);
+    }
+
+    .btn-admin-link:hover {
+        background: #15528a;
+        transform: translateY(-1px);
+    }
+
+    .subtitulo-seccion {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.1rem;
+        color: #cbb49a;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin: 0 0 20px 0;
+        font-weight: 600;
+    }
+
+    /* Tarjetas de Lista de Reservas */
+    .lista-reservas-container {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        padding: 0;
+        margin: 0;
+        list-style: none;
+    }
+
+    .reserva-item-card {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: #fdfdfd;
+        border: 1px solid #f0f2f5;
+        border-radius: 16px;
+        padding: 20px 25px;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .reserva-item-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(0,0,0,0.02);
+        border-color: #e2e8f0;
+    }
+
+    /* Detalles internos de la reserva */
+    .reserva-fecha {
+        display: block;
+        font-size: 0.8rem;
+        color: #cbb49a;
+        font-weight: 600;
+        text-transform: uppercase;
+        margin-bottom: 5px;
+        letter-spacing: 0.5px;
+    }
+
+    .reserva-servicio-nombre {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.15rem;
+        color: #2c3e50;
+        margin: 0 0 6px 0;
+        font-weight: 600;
+    }
+
+    .reserva-usuario-tag {
+        font-size: 0.85rem;
+        color: #667085;
+    }
+    .reserva-usuario-tag strong {
+        color: #0f4c5c;
+    }
+
+    /* Formulario e Inputs */
+    .reserva-accion-form form {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .select-custom-wrapper {
+        position: relative;
+    }
+
+    .select-custom-wrapper select {
+        appearance: none;
+        -webkit-appearance: none;
+        background-color: #ffffff;
+        border: 1px solid #dbeafe;
+        border-radius: 50px;
+        padding: 10px 35px 10px 20px;
+        font-size: 0.85rem;
+        color: #2c3e50;
+        font-weight: 500;
+        cursor: pointer;
+        outline: none;
+        transition: border-color 0.3s ease;
+        min-width: 135px;
+    }
+
+    .select-custom-wrapper select:focus {
+        border-color: #cbb49a;
+    }
+
+    .select-custom-wrapper::after {
+        content: '▼';
+        font-size: 0.6rem;
+        color: #667085;
+        position: absolute;
+        right: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+        pointer-events: none;
+    }
+
+    .btn-actualizar-cita {
+        background: #0f4c5c;
+        color: white;
+        border: none;
+        padding: 11px 24px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: background 0.3s ease, transform 0.2s;
+    }
+
+    .btn-actualizar-cita:hover {
+        background: #14667c;
+    }
+
+    .no-reservas-box {
+        text-align: center;
+        padding: 45px;
+        color: #667085;
+        font-style: italic;
+        background: #f8f9fa;
+        border-radius: 16px;
+        border: 1px dashed #dbeafe;
+    }
+
+    /* Ajustes Mobile */
+    @media (max-width: 768px) {
+        .recepcion-header {
+            flex-direction: column;
+            gap: 15px;
+        }
+        .reserva-item-card {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 20px;
+        }
+        .reserva-accion-form {
+            width: 100%;
+        }
+        .reserva-accion-form form {
+            width: 100%;
+            justify-content: space-between;
+        }
+    }
+</style>
 {% endblock %}

@@ -1,19 +1,197 @@
 {% extends 'base.html' %}
 {% block content %}
-<div style="max-width:800px;margin:60px auto;padding:22px;background:#f7fbff;border-radius:12px;border:1px solid #e6f3fb;">
-    <div style="display:flex;align-items:center;justify-content:space-between;">
-        <div style="display:flex;align-items:center;gap:12px;">
-            <a href="{% url 'admin_services_list' %}" style="text-decoration:none;color:#0f4c5c;font-size:1.2rem;">←</a>
-            <h2 style="color:#0f4c5c;font-family:'Playfair Display', serif;margin:0;">{% if servicio %}Editar{% else %}Agregar{% endif %} Servicio</h2>
+
+<!-- CONTENEDOR PRINCIPAL QUE REPLICA LA RECEPCIÓN -->
+<div class="sirene-form-style-container">
+    
+    <!-- Encabezado con condicional dinámico original -->
+    <div class="sirene-panel-header">
+        <div class="header-text-group">
+            <a href="{% url 'admin_services_list' %}" class="sirene-back-link">
+                ← {% if servicio %}Editar{% else %}Agregar{% endif %} Servicio
+            </a>
+            <p class="sirene-subtitle">
+                {% if servicio %}
+                    Modifica las propiedades, precios, descripción y especialistas asignados para este tratamiento.
+                {% else %}
+                    Completa los campos para registrar un nuevo servicio en el catálogo de SPA Sirene.
+                {% endif %}
+            </p>
         </div>
     </div>
-    <form method="post" style="margin-top:12px;">
+
+    <hr class="sirene-divider">
+
+    <!-- Formulario Limpio -->
+    <form method="post" class="sirene-premium-form">
         {% csrf_token %}
-        {{ form.as_p }}
-        <div style="margin-top:12px;">
-            <button type="submit" style="background:#0f4c5c;color:white;padding:8px 14px;border-radius:8px;border:none;">Guardar</button>
-            <a href="{% url 'admin_services_list' %}" style="margin-left:10px;color:#4a5568;">Cancelar</a>
+        
+        <div class="form-fields-wrapper">
+            <!-- Mantenemos tu renderizado exacto de Django -->
+            {{ form.as_p }}
+        </div>
+
+        <!-- Bloque de Botones de Acción inferior -->
+        <div class="form-actions-footer">
+            <button type="submit" class="sirene-btn-primary">
+                Guardar
+            </button>
+            <a href="{% url 'admin_services_list' %}" class="sirene-btn-cancel">
+                Cancelar
+            </a>
         </div>
     </form>
+
 </div>
+
+<!-- ESTILOS EXCLUSIVOS PARA INTEGRAR EL DISEÑO DE RECEPCIÓN -->
+<style>
+    /* Caja máster idéntica a la Recepción y Servicios */
+    .sirene-form-style-container {
+        max-width: 750px;
+        margin: 60px auto;
+        background: #ffffff;
+        border-radius: 24px;
+        box-shadow: 0 10px 35px rgba(0, 0, 0, 0.03);
+        padding: 40px;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    /* Encabezado */
+    .sirene-back-link {
+        font-family: 'Playfair Display', serif;
+        font-size: 2rem;
+        color: #0f4c5c;
+        font-weight: 700;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .sirene-back-link:hover {
+        opacity: 0.85;
+    }
+
+    .sirene-subtitle {
+        font-size: 0.95rem;
+        color: #667085;
+        margin: 6px 0 0 0;
+        line-height: 1.5;
+    }
+
+    .sirene-divider {
+        border: 0;
+        border-top: 1px solid #f2f4f7;
+        margin: 30px 0;
+    }
+
+    /* Envoltura y estilización forzada de la etiqueta <p> que genera {{ form.as_p }} */
+    .form-fields-wrapper p {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-bottom: 24px;
+        font-size: 0.9rem;
+        color: #344054;
+        font-weight: 500;
+    }
+
+    /* Inputs de texto, números, áreas de texto y selectores de Django */
+    .form-fields-wrapper input[type="text"],
+    .form-fields-wrapper input[type="number"],
+    .form-fields-wrapper input[type="file"],
+    .form-fields-wrapper textarea,
+    .form-fields-wrapper select {
+        width: 100%;
+        padding: 12px 16px;
+        border: 1px solid #d0d5dd;
+        border-radius: 10px;
+        font-size: 0.95rem;
+        color: #1d2939;
+        background-color: #ffffff;
+        font-family: 'Poppins', sans-serif;
+        box-sizing: border-box;
+        transition: all 0.2s ease;
+    }
+
+    /* Enfoque (Focus) en los inputs usando la paleta del Spa */
+    .form-fields-wrapper input:focus,
+    .form-fields-wrapper textarea:focus,
+    .form-fields-wrapper select:focus {
+        outline: none;
+        border-color: #0f4c5c;
+        box-shadow: 0 0 0 4px rgba(15, 76, 92, 0.08);
+    }
+
+    /* Ajuste para el cuadro de descripción largo */
+    .form-fields-wrapper textarea {
+        min-height: 120px;
+        resize: vertical;
+        line-height: 1.6;
+    }
+
+    /* Ajuste para el cuadro multiselección de Especialistas */
+    .form-fields-wrapper select[multiple] {
+        min-height: 110px;
+        padding: 10px;
+    }
+
+    /* Pie del formulario para los botones de acción */
+    .form-actions-footer {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin-top: 35px;
+        border-top: 1px solid #f2f4f7;
+        padding-top: 25px;
+    }
+
+    /* Botón Guardar (Primario) */
+    .sirene-btn-primary {
+        background-color: #0f4c5c;
+        color: #ffffff;
+        padding: 12px 32px;
+        border-radius: 50px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.2s, transform 0.1s;
+    }
+
+    .sirene-btn-primary:hover {
+        background-color: #0b3945;
+        transform: translateY(-1px);
+    }
+
+    /* Botón Cancelar (Enlace sutil) */
+    .sirene-btn-cancel {
+        color: #667085;
+        font-size: 0.9rem;
+        font-weight: 500;
+        text-decoration: none;
+        padding: 12px 20px;
+        transition: color 0.2s;
+    }
+
+    .sirene-btn-cancel:hover {
+        color: #344054;
+    }
+
+    /* Responsividad */
+    @media (max-width: 768px) {
+        .sirene-form-style-container {
+            padding: 25px;
+            margin: 30px 15px;
+        }
+        .form-actions-footer {
+            flex-direction: column;
+            width: 100%;
+        }
+        .sirene-btn-primary, .sirene-btn-cancel {
+            width: 100%;
+            text-align: center;
+        }
+    }
+</style>
+
 {% endblock %}

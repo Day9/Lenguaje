@@ -1,7 +1,60 @@
 {% extends 'base.html' %}
+{% load static %}
+
 {% block content %}
-<div style="max-width:900px;margin:80px auto;padding:20px;">
-    <h2>Aviso Legal</h2>
-    <p>Información legal del centro. Personaliza este texto según la normativa aplicable.</p>
+<style>
+    /* Cabecera consistente */
+    .hero-section {
+        background-color: #0f4c5c;
+        padding: 80px 20px;
+        text-align: center;
+        width: 100%;
+    }
+
+    /* Contenedor del texto legal */
+    .legal-wrapper {
+        max-width: 800px;
+        margin: 60px auto;
+        padding: 40px;
+        background: #ffffff;
+        border-radius: 25px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        border: 1px solid #f0f0f0;
+    }
+
+    .legal-wrapper h2 {
+        color: #0f4c5c;
+        font-family: 'Playfair Display', serif;
+        margin-bottom: 20px;
+    }
+
+    .legal-wrapper p {
+        color: #4a5568;
+        line-height: 1.8;
+        margin-bottom: 20px;
+    }
+</style>
+
+<!-- Cabecera -->
+<div class="hero-section">
+    <p style="color: #c7af6c; text-transform: uppercase; letter-spacing: 3px; font-size: 0.8rem; margin-bottom: 15px;">
+        Sirene Spa & Bienestar
+    </p>
+    <h1 style="color: #ffffff; font-family: 'Playfair Display', serif; font-size: 3.5rem; margin-bottom: 20px;">
+        Aviso Legal
+    </h1>
 </div>
+
+<div class="legal-wrapper">
+    <h2>Compromiso Legal y Transparencia</h2>
+    <p>En Sirene Spa & Bienestar, nos esforzamos por ofrecerte un entorno de confianza desde el primer clic. El acceso a nuestra plataforma digital implica la aceptación de las condiciones que rigen nuestra relación, diseñadas para proteger tanto la integridad de nuestros servicios como tu privacidad.</p>
+    
+    <h2>Uso de nuestra Plataforma</h2>
+    <p>Esta plataforma es una herramienta exclusiva para la gestión de bienestar y reserva de servicios. Al utilizarla, te comprometes a proporcionar información veraz y a hacer un uso responsable de las funciones de usuario, respetando siempre el carácter profesional de nuestro centro.</p>
+
+    <h2>Seguridad y Confidencialidad</h2>
+    <p>Tu tranquilidad es nuestra prioridad. Toda la información personal que compartes con nosotros es tratada bajo estrictos protocolos de confidencialidad, utilizada exclusivamente para personalizar tu experiencia en nuestras instalaciones y optimizar la atención de nuestro equipo.</p>
+
+    <h2>Propiedad y Derechos</h2>
+    <p>Todo el contenido, las imágenes y la identidad visual de este sitio son propiedad de Sirene Spa. Valoramos la autenticidad y agradecemos que cualquier material gráfico o informativo sea utilizado únicamente con fines personales, evitando su reproducción sin nuestro consentimiento previo.</p>
 {% endblock %}

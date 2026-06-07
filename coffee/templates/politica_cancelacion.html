@@ -1,7 +1,46 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
+{% load static %}
+
 {% block content %}
-<div style="max-width:900px;margin:80px auto;padding:20px;">
-    <h2>Política de Cancelación</h2>
-    <p>Explica la política de cancelación. Por ejemplo, cancelaciones con 24h de antelación.</p>
-</div>
+<section class="py-16 px-6 md:px-20 bg-white">
+    <div class="max-w-3xl mx-auto">
+        
+        <h2 class="text-4xl md:text-5xl mb-8" style="font-family: 'Playfair Display', serif; color: #07707D;">
+            Política de Cancelación
+        </h2>
+        
+        <p class="text-lg text-slate-600 mb-12 leading-relaxed">
+            En Sirene, valoramos su tiempo y el de nuestros terapeutas. Para asegurar una experiencia de calidad, le rogamos considerar nuestras políticas de reserva:
+        </p>
+
+        <div class="space-y-8">
+            <!-- Política Principal -->
+            <div>
+                <h3 class="text-2xl mb-4 font-semibold" style="font-family: 'Playfair Display', serif; color: #07707D;">
+                    Aviso con 24 horas de antelación
+                </h3>
+                <p class="text-slate-700 leading-relaxed pl-6 border-l-2 border-[#07707D] py-1">
+                    Entendemos que pueden surgir imprevistos. Agradecemos que cualquier cancelación o modificación de su cita sea notificada con al menos <strong>24 horas de antelación</strong>. Esto nos permite gestionar la agenda y ofrecer el espacio a otros clientes.
+                </p>
+            </div>
+
+            <!-- Política de No Presentación -->
+            <div>
+                <h3 class="text-2xl mb-4 font-semibold" style="font-family: 'Playfair Display', serif; color: #07707D;">
+                    Cancelaciones tardías o inasistencias
+                </h3>
+                <p class="text-slate-700 leading-relaxed pl-6 border-l-2 border-[#07707D] py-1">
+                    Las citas canceladas fuera del plazo de 24 horas o las inasistencias sin previo aviso podrán estar sujetas a cargos administrativos o a la pérdida del depósito de reserva, según lo estipulado al momento de agendar.
+                </p>
+            </div>
+        </div>
+
+        <div class="mt-12 pt-8 border-t border-slate-200">
+            <p class="text-sm italic text-slate-500">
+                Gracias por su comprensión y compromiso con la puntualidad y el respeto mutuo.
+            </p>
+        </div>
+        
+    </div>
+</section>
 {% endblock %}

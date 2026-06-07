@@ -1,25 +1,181 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="admin-card">
-  <div class="admin-header">
-    <div style="display:flex;align-items:center;">
-      <a class="back-link" href="{% url 'admin_dashboard' %}">←</a>
-      <h2 class="admin-title" style="font-size:1.3rem;">Resumen de Reservas</h2>
-    </div>
-    <div class="admin-actions">
-      <a class="btn-primary" href="{% url 'admin_resumen_pdf' %}">Exportar PDF</a>
-    </div>
-  </div>
 
-  <div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:12px;">
-    {% for c in conteos %}
-      <div style="background:#ffffff;border:1px solid #e6f3fb;padding:14px;border-radius:10px;min-width:160px;">
-        <div style="font-size:0.9rem;color:#4a5568;">{{ c.estado }}</div>
-        <div style="font-size:1.8rem;color:#0f4c5c;font-weight:700;margin-top:6px;">{{ c.total }}</div>
-      </div>
-    {% empty %}
-      <div class="admin-subtle">No hay reservas registradas.</div>
-    {% endfor %}
-  </div>
+<div class="sirene-recepcion-style-container">
+    
+    <div class="sirene-panel-header">
+        <div class="header-text-group">
+            <a class="sirene-back-link" href="{% url 'admin_dashboard' %}">
+                ← Resumen de Reservas
+            </a>
+            <p class="sirene-subtitle">Balance general y métricas de rendimiento sobre las citas gestionadas en la plataforma.</p>
+        </div>
+        <div class="header-action-group">
+            <a class="sirene-btn-primary" href="{% url 'admin_resumen_pdf' %}">
+                Exportar PDF
+            </a>
+        </div>
+    </div>
+
+    <hr class="sirene-divider">
+
+    <div class="sirene-metrics-grid">
+        {% for c in conteos %}
+            <div class="sirene-metric-card">
+                <div class="metric-status-title">
+                    {{ c.estado }}
+                </div>
+                <div class="metric-counter-value">
+                    {{ c.total }}
+                </div>
+            </div>
+        {% empty %}
+            <div class="sirene-empty-state" style="grid-column: 1 / -1; padding: 20px 0;">
+                <p>No hay reservas registradas.</p>
+            </div>
+        {% endfor %}
+    </div>
+
 </div>
+
+<style>
+    /* Caja máster blanca con bordes redondeados y sombra sutil */
+    .sirene-recepcion-style-container {
+        max-width: 1000px;
+        margin: 60px auto;
+        background: #ffffff;
+        border-radius: 24px;
+        box-shadow: 0 10px 35px rgba(0, 0, 0, 0.03);
+        padding: 40px;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    /* Encabezado flex alineado */
+    .sirene-panel-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .sirene-back-link {
+        font-family: 'Playfair Display', serif;
+        font-size: 2rem;
+        color: #0f4c5c;
+        font-weight: 700;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .sirene-back-link:hover {
+        opacity: 0.85;
+    }
+
+    .sirene-subtitle {
+        font-size: 0.95rem;
+        color: #667085;
+        margin: 6px 0 0 0;
+    }
+
+    /* Botón Primario Sólido Azul/Verde Oscuro */
+    .sirene-btn-primary {
+        display: inline-block;
+        background-color: #0f4c5c;
+        color: #ffffff;
+        padding: 12px 24px;
+        border-radius: 50px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: background-color 0.2s ease, transform 0.1s ease;
+        white-space: nowrap;
+    }
+
+    .sirene-btn-primary:hover {
+        background-color: #0b3945;
+        transform: translateY(-1px);
+    }
+
+    .sirene-divider {
+        border: 0;
+        border-top: 1px solid #f2f4f7;
+        margin: 30px 0;
+    }
+
+    /* Rejilla de Métricas Reutilizable */
+    .sirene-metrics-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 20px;
+    }
+
+    /* Tarjeta de Métrica Individual */
+    .sirene-metric-card {
+        background: #ffffff;
+        border: 1px solid #eaecf0;
+        padding: 24px 28px;
+        border-radius: 16px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.01);
+        transition: all 0.2s ease;
+    }
+
+    .sirene-metric-card:hover {
+        border-color: #0f4c5c;
+        box-shadow: 0 6px 18px rgba(15, 76, 92, 0.04);
+        transform: translateY(-2px);
+    }
+
+    /* Texto del Estado */
+    .metric-status-title {
+        font-size: 0.8rem;
+        color: #667085;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    /* Valor numérico del contador */
+    .metric-counter-value {
+        font-size: 2.2rem;
+        color: #0f4c5c;
+        font-weight: 700;
+        margin-top: 8px;
+        font-family: 'Poppins', sans-serif;
+        line-height: 1;
+    }
+
+    .sirene-empty-state {
+        text-align: center;
+        color: #667085;
+        font-style: italic;
+    }
+
+    /* Adaptabilidad Móvil */
+    @media (max-width: 768px) {
+        .sirene-recepcion-style-container {
+            padding: 20px;
+            margin: 20px 10px;
+        }
+
+        .sirene-panel-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .header-action-group {
+            width: 100%;
+        }
+
+        .sirene-btn-primary {
+            width: 100%;
+            text-align: center;
+        }
+
+        .sirene-metrics-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+    }
+</style>
+
 {% endblock %}

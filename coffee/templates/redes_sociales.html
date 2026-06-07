@@ -1,7 +1,31 @@
 {% extends 'base.html' %}
+{% load static %}
+
 {% block content %}
-<div style="max-width:900px;margin:80px auto;padding:20px;">
-    <h2>Redes Sociales</h2>
-    <p>Instagram: @sirene | TikTok: @sirene. Añade los enlaces reales aquí.</p>
-</div>
+<!-- Encabezado con estilo profesional -->
+<section class="bg-[#334B64] py-16 px-4 text-center">
+    <!-- El h2 tomará automáticamente la fuente Playfair Display y el color que configuramos en base.html -->
+    <h2 class="text-4xl md:text-5xl font-bold text-white">Nuestras Redes Sociales</h2>
+</section>
+
+<!-- Tarjeta de Contenido -->
+<section class="max-w-2xl mx-auto -mt-10 bg-white p-8 md:p-12 rounded-3xl text-center shadow-xl border border-slate-100">
+    
+    <p class="text-slate-600 text-lg leading-relaxed mb-10">
+        Síguenos para conocer nuestras promociones exclusivas, consejos de bienestar y el día a día en <strong>Sirene Spa</strong>.
+    </p>
+    
+    <!-- Contenedor de iconos -->
+    <div class="flex justify-center items-center gap-8 md:gap-12">
+        <a href="https://instagram.com" target="_blank" class="text-[#334B64] hover:text-[#5a7a9c] transition-all duration-300 transform hover:scale-110">
+            <i class="fab fa-instagram text-5xl"></i>
+        </a>
+        <a href="https://tiktok.com" target="_blank" class="text-[#334B64] hover:text-[#5a7a9c] transition-all duration-300 transform hover:scale-110">
+            <i class="fab fa-tiktok text-5xl"></i>
+        </a>
+        <a href="https://facebook.com" target="_blank" class="text-[#334B64] hover:text-[#5a7a9c] transition-all duration-300 transform hover:scale-110">
+            <i class="fab fa-facebook-f text-5xl"></i>
+        </a>
+    </div>
+</section>
 {% endblock %}

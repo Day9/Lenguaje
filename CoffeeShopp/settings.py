@@ -125,20 +125,22 @@ LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'index'
 
 # =====================================================================
-# CONFIGURACIÓN DE CORREO ELECTRÓNICO REAL (SMTP GMAIL)
+# CONFIGURACIÓN DE CORREO ELECTRÓNICO REAL (SMTP GMAIL) - CORREGIDO
 # =====================================================================
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
+# Tu cuenta de correo electrónico asignada para el SPA
 EMAIL_HOST_USER = 'spa.sirene20@gmail.com'
-EMAIL_HOST_PASSWORD = 'goqgsakrwvpswtbv'
 
-DEFAULT_FROM_EMAIL = 'spa.sirene20@gmail.com'
+# Nueva clave de aplicación de Google integrada correctamente sin espacios
+EMAIL_HOST_PASSWORD = 'jpwxgqfalghugugj'
+
+# Configuración del remitente para las bandejas de entrada de los clientes
+DEFAULT_FROM_EMAIL = 'SPA Sirene <spa.sirene20@gmail.com>'
 SERVER_EMAIL = 'spa.sirene20@gmail.com'
+
 # Lista de correos que recibirán copia oculta (BCC) de notificaciones importantes
-NOTIFY_BCC = [
-    # agrega aquí los correos de los administradores, por ejemplo:
-    # 'admin1@example.com', 'admin2@example.com'
-]
+NOTIFY_BCC = []

@@ -2,33 +2,51 @@
 {% load static %}
 
 {% block content %}
-<div class="max-w-5xl mx-auto p-6 md:p-10">
+<div class="max-w-5xl mx-auto p-6 md:p-10" style="font-family: 'Poppins', sans-serif;">
+    
     <div class="mb-10 border-b border-slate-200 pb-6">
-        <h2 class="text-3xl font-light text-slate-800">Panel Admin Superior</h2>
+        <h2 class="text-3xl font-bold" style="font-family: 'Playfair Display', serif; color: #0f4c5c;">Panel Admin Superior</h2>
         <p class="text-slate-500 mt-2">Gestión centralizada de SPA Sirene</p>
     </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-12">
-        <a href="{% url 'admin_services_list' %}" class="p-4 bg-white border border-slate-200 rounded-lg hover:border-teal-500 transition shadow-sm font-medium text-slate-700">Gestionar servicios</a>
-        <a href="{% url 'admin_specialists_list' %}" class="p-4 bg-white border border-slate-200 rounded-lg hover:border-teal-500 transition shadow-sm font-medium text-slate-700">Gestionar especialistas</a>
-        <a href="{% url 'admin_horarios_list' %}" class="p-4 bg-white border border-slate-200 rounded-lg hover:border-teal-500 transition shadow-sm font-medium text-slate-700">Gestionar horarios</a>
-        <a href="{% url 'admin_reservas_list' %}" class="p-4 bg-white border border-slate-200 rounded-lg hover:border-teal-500 transition shadow-sm font-medium text-slate-700">Ver reservas</a>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
+        
+        <a href="{% url 'admin_services_list' %}" class="flex flex-col items-center justify-center text-center p-6 bg-white border border-slate-200 rounded-xl hover:border-slate-400 hover:shadow-md transition-all duration-200 font-semibold" style="color: #0f4c5c;">
+            <span class="text-3xl mb-2 flex items-center justify-center">💆</span>
+            <span class="text-sm">Gestionar servicios</span>
+        </a>
+        
+        <a href="{% url 'admin_specialists_list' %}" class="flex flex-col items-center justify-center text-center p-6 bg-white border border-slate-200 rounded-xl hover:border-slate-400 hover:shadow-md transition-all duration-200 font-semibold" style="color: #0f4c5c;">
+            <span class="text-3xl mb-2 flex items-center justify-center">🧑‍⚕️</span>
+            <span class="text-sm">Gestionar especialistas</span>
+        </a>
+        
+        <a href="{% url 'admin_horarios_list' %}" class="flex flex-col items-center justify-center text-center p-6 bg-white border border-slate-200 rounded-xl hover:border-slate-400 hover:shadow-md transition-all duration-200 font-semibold" style="color: #0f4c5c;">
+            <span class="text-3xl mb-2 flex items-center justify-center">⏰</span>
+            <span class="text-sm">Gestionar horarios</span>
+        </a>
+        
+        <a href="{% url 'admin_reservas_list' %}" class="flex flex-col items-center justify-center text-center p-6 bg-white border border-slate-200 rounded-xl hover:border-slate-400 hover:shadow-md transition-all duration-200 font-semibold" style="color: #0f4c5c;">
+            <span class="text-3xl mb-2 flex items-center justify-center">📅</span>
+            <span class="text-sm">Ver reservas</span>
+        </a>
+        
     </div>
 
-    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-        <div class="px-6 py-4 border-b border-slate-100 bg-slate-50">
-            <h3 class="text-lg font-semibold text-slate-800">Estado de Especialistas</h3>
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+        <div class="px-6 py-4 border-b border-slate-100 bg-slate-50/70">
+            <h3 class="text-base font-bold uppercase tracking-wider text-slate-600" style="font-size: 0.8rem;">Estado de Especialistas</h3>
         </div>
         <ul class="divide-y divide-slate-100">
             {% for e in especialistas %}
-            <li class="px-6 py-4 flex justify-between items-center hover:bg-slate-50 transition">
-                <span class="text-slate-700">{{ e.name }}</span>
+            <li class="px-6 py-4 flex justify-between items-center hover:bg-slate-50/50 transition duration-150">
+                <span class="font-medium text-slate-700">{{ e.name }}</span>
                 <span class="text-sm font-medium {% if e.available %}text-teal-600{% else %}text-red-500{% endif %}">
                     {% if e.available %}Disponible{% else %}No disponible{% endif %}
                 </span>
             </li>
             {% empty %}
-            <li class="px-6 py-4 text-slate-400 italic">No hay especialistas registrados.</li>
+            <li class="px-6 py-4 text-slate-400 italic text-center">No hay especialistas registrados.</li>
             {% endfor %}
         </ul>
     </div>

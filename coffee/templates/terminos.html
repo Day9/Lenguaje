@@ -1,7 +1,72 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
+{% load static %}
+
 {% block content %}
-<div style="max-width:900px;margin:80px auto;padding:20px;">
-    <h2>Términos y Condiciones</h2>
-    <p>Condiciones de uso del servicio. Personaliza según tu negocio.</p>
-</div>
+<!-- Sección de Términos y Condiciones -->
+<section class="py-16 px-6 md:px-20 bg-white">
+    <div class="max-w-3xl mx-auto">
+        
+        <!-- Título Principal -->
+        <h2 class="text-4xl md:text-5xl mb-8" style="font-family: 'Playfair Display', serif; color: #07707D;">
+            Términos y Condiciones
+        </h2>
+        
+        <!-- Párrafo de Bienvenida -->
+        <p class="text-lg text-slate-600 mb-12 leading-relaxed">
+            Bienvenido a <strong>Sirene Spa</strong>. Al hacer uso de nuestras instalaciones y servicios, usted acepta los siguientes términos. Le invitamos a leerlos detenidamente para garantizar una convivencia armoniosa y una experiencia de bienestar completa.
+        </p>
+
+        <!-- Bloque contenedor corregido: incluye todos los puntos -->
+        <div class="space-y-10">
+            
+            <!-- Punto 1 -->
+            <div>
+                <h3 class="text-2xl mb-4 flex items-center" style="font-family: 'Playfair Display', serif; color: #07707D;">
+                    <span class="mr-3 opacity-60">01.</span> Reservas y Cancelaciones
+                </h3>
+                <p class="text-slate-700 leading-relaxed pl-0 md:pl-10 border-l-2 border-[#07707D] border-opacity-20 py-1">
+                    Para asegurar su espacio, solicitamos realizar sus reservas con antelación. En caso de requerir una cancelación o modificación, agradecemos notificarlo con al menos 24 horas de antelación.
+                </p>
+            </div>
+
+            <!-- Punto 2 -->
+            <div>
+                <h3 class="text-2xl mb-4 flex items-center" style="font-family: 'Playfair Display', serif; color: #07707D;">
+                    <span class="mr-3 opacity-60">02.</span> Puntualidad
+                </h3>
+                <p class="text-slate-700 leading-relaxed pl-0 md:pl-10 border-l-2 border-[#07707D] border-opacity-20 py-1">
+                    Le sugerimos llegar 10 minutos antes de su cita para completar su registro. En caso de retraso, la sesión finalizará en el horario previsto.
+                </p>
+            </div>
+
+            <!-- Punto 3 -->
+            <div>
+                <h3 class="text-2xl mb-4 flex items-center" style="font-family: 'Playfair Display', serif; color: #07707D;">
+                    <span class="mr-3 opacity-60">03.</span> Salud y Bienestar
+                </h3>
+                <p class="text-slate-700 leading-relaxed pl-0 md:pl-10 border-l-2 border-[#07707D] border-opacity-20 py-1">
+                    La seguridad es nuestra prioridad. Por favor, infórmenos sobre cualquier condición médica o alergia antes de comenzar cualquier tratamiento.
+                </p>
+            </div>
+
+            <!-- Punto 4 -->
+            <div>
+                <h3 class="text-2xl mb-4 flex items-center" style="font-family: 'Playfair Display', serif; color: #07707D;">
+                    <span class="mr-3 opacity-60">04.</span> Ambiente de Silencio
+                </h3>
+                <p class="text-slate-700 leading-relaxed pl-0 md:pl-10 border-l-2 border-[#07707D] border-opacity-20 py-1">
+                    Sirene es un refugio de desconexión. Solicitamos mantener sus dispositivos en silencio dentro de las instalaciones.
+                </p>
+            </div>
+
+        </div> <!-- Cierre correcto del div space-y-10 -->
+
+        <!-- Sección de cierre -->
+        <div class="mt-12 pt-8 border-t border-slate-200">
+            <p class="text-sm italic text-slate-500">
+                Última actualización: Junio 2026. Al continuar navegando, usted acepta nuestras políticas.
+            </p>
+        </div>
+    </div>
+</section>
 {% endblock %}

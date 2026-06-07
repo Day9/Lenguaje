@@ -1,7 +1,57 @@
 {% extends 'base.html' %}
+{% load static %}
+
 {% block content %}
-<div style="max-width:900px;margin:80px auto;padding:20px;">
+<style>
+    /* Estilo del encabezado principal */
+    .header-policy {
+        background-color: #0f4c5c;
+        padding: 60px 20px;
+        text-align: center;
+        color: white;
+    }
+
+    .header-policy h2 {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+        color: #ffffff !important
+    }
+
+    /* Contenedor corregido: sin margen negativo para no superponer */
+    .content-container {
+        max-width: 800px;
+        margin: 40px auto 80px auto; 
+        background: white;
+        padding: 40px;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        border: 1px solid #e2e8f0;
+    }
+
+    .content-container h3 {
+        color: #0f4c5c; 
+        font-family: 'Playfair Display', serif;
+        margin-bottom: 15px;
+        font-size: 1.5rem;
+    }
+
+    .content-container p {
+        line-height: 1.8;
+        color: #4a5568;
+        margin-bottom: 20px;
+    }
+</style>
+
+<section class="header-policy">
     <h2>Política de Cookies</h2>
-    <p>Describe qué cookies usa el sitio y cómo gestionarlas.</p>
-</div>
+</section>
+
+<section class="content-container">
+    <h3>Transparencia en tu Navegación</h3>
+    <p>En Sirene Spa, utilizamos cookies para mejorar tu experiencia de usuario, analizar el tráfico de nuestro sitio y ofrecerte contenidos personalizados. Al navegar en nuestro sitio, aceptas el uso de estas tecnologías.</p>
+    
+    <h3>¿Cómo gestionar tus cookies?</h3>
+    <p>Puedes configurar tu navegador para rechazar o eliminar las cookies en cualquier momento a través de la configuración de seguridad de tu navegador web. Ten en cuenta que algunas funciones de nuestro sitio podrían verse limitadas si desactivas todas las cookies.</p>
+</section>
 {% endblock %}

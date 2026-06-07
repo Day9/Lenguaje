@@ -1,7 +1,59 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
+{% load static %}
+
 {% block content %}
-<div style="max-width:900px;margin:80px auto;padding:20px;">
-    <h2>Política de Reservas</h2>
-    <p>Cómo funcionan las reservas, bloqueo de horarios y condiciones.</p>
-</div>
+<section class="py-16 px-6 md:px-20 bg-white">
+    <div class="max-w-3xl mx-auto">
+        
+        <!-- Título Principal -->
+        <h2 class="text-4xl md:text-5xl mb-8" style="font-family: 'Playfair Display', serif; color: #07707D;">
+            Política de Reservas
+        </h2>
+        
+        <p class="text-lg text-slate-600 mb-12 leading-relaxed">
+            En <strong>Sirene</strong>, cuidamos cada detalle de su experiencia desde el primer contacto. Nuestra política de reservas está diseñada para asegurar la disponibilidad de nuestros servicios y la exclusividad que usted merece.
+        </p>
+
+        <div class="space-y-10">
+            
+            <!-- 01. Proceso de Reserva -->
+            <div>
+                <h3 class="text-2xl mb-4 flex items-center" style="font-family: 'Playfair Display', serif; color: #07707D;">
+                    <span class="mr-3 opacity-60">01.</span> ¿Cómo reservar?
+                </h3>
+                <p class="text-slate-700 leading-relaxed pl-0 md:pl-10 border-l-2 border-[#07707D] border-opacity-20 py-1">
+                    Puede realizar sus reservas a través de nuestro sistema web, vía telefónica o mediante nuestros canales oficiales de atención al cliente. Para garantizar su espacio, le recomendamos agendar con al menos 48 horas de antelación.
+                </p>
+            </div>
+
+            <!-- 02. Bloqueo de Horarios -->
+            <div>
+                <h3 class="text-2xl mb-4 flex items-center" style="font-family: 'Playfair Display', serif; color: #07707D;">
+                    <span class="mr-3 opacity-60">02.</span> Bloqueo de Horarios
+                </h3>
+                <p class="text-slate-700 leading-relaxed pl-0 md:pl-10 border-l-2 border-[#07707D] border-opacity-20 py-1">
+                    Al confirmar su reserva, bloqueamos el horario exclusivamente para usted. Esto implica la preparación previa de nuestras áreas y la asignación del terapeuta especializado, asegurando que todo esté listo para su llegada.
+                </p>
+            </div>
+
+            <!-- 03. Confirmación y Garantía -->
+            <div>
+                <h3 class="text-2xl mb-4 flex items-center" style="font-family: 'Playfair Display', serif; color: #07707D;">
+                    <span class="mr-3 opacity-60">03.</span> Confirmación
+                </h3>
+                <p class="text-slate-700 leading-relaxed pl-0 md:pl-10 border-l-2 border-[#07707D] border-opacity-20 py-1">
+                    Para citas de alta demanda o servicios prolongados, podremos solicitar una confirmación previa vía WhatsApp o correo electrónico. Agradecemos mantener sus datos de contacto actualizados en nuestro sistema.
+                </p>
+            </div>
+
+        </div>
+
+        <!-- Cierre -->
+        <div class="mt-12 pt-8 border-t border-slate-200">
+            <p class="text-sm italic text-slate-500">
+                ¿Alguna duda con su reserva? Nuestro equipo de recepción en Sirene está siempre disponible para asistirle en la planificación de su visita.
+            </p>
+        </div>
+    </div>
+</section>
 {% endblock %}

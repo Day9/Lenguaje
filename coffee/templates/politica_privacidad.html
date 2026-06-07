@@ -1,7 +1,66 @@
 {% extends 'base.html' %}
+{% load static %}
+
 {% block content %}
-<div style="max-width:900px;margin:80px auto;padding:20px;">
-    <h2>Política de Privacidad</h2>
-    <p>Explica cómo se tratan los datos personales. Añade tu política real aquí.</p>
+<style>
+    /* Cabecera consistente */
+    .hero-section {
+        background-color: #0f4c5c;
+        padding: 80px 20px;
+        text-align: center;
+        width: 100%;
+    }
+
+    /* Contenedor del contenido */
+    .privacy-wrapper {
+        max-width: 800px;
+        margin: 60px auto;
+        padding: 40px;
+        background: #ffffff;
+        border-radius: 25px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        border: 1px solid #f0f0f0;
+    }
+
+    .privacy-wrapper h2 {
+        color: #0f4c5c;
+        font-family: 'Playfair Display', serif;
+        margin-top: 30px;
+        margin-bottom: 15px;
+    }
+
+    .privacy-wrapper p {
+        color: #4a5568;
+        line-height: 1.8;
+        margin-bottom: 15px;
+    }
+</style>
+
+<!-- Cabecera -->
+<div class="hero-section">
+    <p style="color: #cfb879; text-transform: uppercase; letter-spacing: 3px; font-size: 0.8rem; margin-bottom: 15px;">
+        Sirene Spa & Bienestar
+    </p>
+    <h1 style="color: #ffffff; font-family: 'Playfair Display', serif; font-size: 3.5rem; margin-bottom: 20px;">
+        Política de Privacidad
+    </h1>
+</div>
+
+<!-- Contenido de Privacidad -->
+<div class="privacy-wrapper">
+    <h2>Tu Confianza es Nuestra Prioridad</h2>
+    <p>En Sirene Spa, entendemos que tu información personal es un activo valioso. Esta política describe cómo recopilamos, utilizamos y protegemos los datos que nos facilitas al interactuar con nuestra plataforma digital.</p>
+    
+    <h2>Recopilación de Información</h2>
+    <p>Recopilamos únicamente la información necesaria para brindarte una atención personalizada, tales como nombre, contacto y preferencias de bienestar. Estos datos son proporcionados voluntariamente por ti al crear tu cuenta o gestionar tus servicios.</p>
+
+    <h2>Uso de Datos</h2>
+    <p>La información recabada tiene como único fin mejorar tu experiencia en nuestras instalaciones. Utilizamos tus datos para la reserva de citas, confirmaciones y, si decides recibirlo, para informarte sobre ofertas especiales diseñadas para tu cuidado.</p>
+
+    <h2>Seguridad y Protección</h2>
+    <p>Implementamos medidas de seguridad digitales para proteger tu información contra el acceso no autorizado. Nunca compartiremos, venderemos ni alquilaremos tus datos a terceros; tu privacidad es un pilar fundamental de nuestra ética profesional.</p>
+
+    <h2>Derechos del Usuario</h2>
+    <p>Tienes el derecho absoluto de acceder, rectificar o eliminar tu información en cualquier momento. Si tienes dudas sobre el tratamiento de tus datos, nuestro equipo está a tu disposición para atenderte directamente en nuestras instalaciones.</p>
 </div>
 {% endblock %}

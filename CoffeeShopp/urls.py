@@ -4,6 +4,7 @@ URL configuration for CoffeeShopp project.
 from django.contrib import admin
 from django.urls import path, include
 from django.contrib.auth import views as auth_views
+from django.views.generic import RedirectView
 from coffee import views as coffee_views  # Importamos tus vistas personalizadas
 
 urlpatterns = [
@@ -25,6 +26,9 @@ urlpatterns = [
     path('spa/password-reset-complete/', auth_views.PasswordResetCompleteView.as_view(
         template_name='registration/password_reset_complete.html'
     ), name='password_reset_complete'),
+
+    # Redirigir la raíz a /spa/ para evitar 404 al cargar la aplicación en /
+    path('', RedirectView.as_view(url='/spa/')),
 
     # Tu aplicación principal
     path('spa/', include('coffee.urls')),

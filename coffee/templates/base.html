@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>SPA Sirene</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -26,167 +27,182 @@
             font-family: 'Poppins', sans-serif;
         }
 
+        /* Agrega espaciado superior automático para compensar la barra fija de navegación */
         body:not(:has(.full-hero)) {
-            padding-top: 100px;
+            padding-top: 80px;
         }
 
-        .nav-sirene {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            background: var(--blanco);
-            padding: 1.2rem 5%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-            z-index: 1000;
+        /* Corrección nativa de bloqueo para el menú móvil */
+        #mobile-dropdown-menu.menu-oculto {
+            display: none !important;
         }
-
-        .brand {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.6rem;
-            letter-spacing: 3px;
-            text-decoration: none;
-            color: var(--rain-boots);
-            text-transform: uppercase;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        .nav-link,
-        .nav-button {
-            text-decoration: none;
-            color: var(--rain-boots);
-            font-size: 0.85rem;
-            font-weight: 500;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            padding: 0.75rem 1rem;
-            border-radius: 999px;
-        }
-
-        .nav-button {
-            background: #334B64;
-            color: white;
-        }
-
-        .nav-link:hover,
-        .nav-button:hover {
-            opacity: 0.85;
-        }
-
-        .nav-item {
-            position: relative;
-        }
-
-        .has-dropdown > .nav-link {
-            cursor: pointer;
-        }
-
-        .dropdown-menu {
-            position: absolute;
-            top: 110%;
-            left: 0;
-            min-width: 180px;
-            background: var(--blanco);
-            border-radius: 16px;
-            box-shadow: 0 18px 40px rgba(0,0,0,0.08);
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(10px);
-            transition: all 200ms ease;
-            overflow: hidden;
-            z-index: 1000;
-        }
-
-        .has-dropdown:hover .dropdown-menu {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0);
-        }
-
-        .dropdown-menu a,
-        .dropdown-menu button {
-            display: block;
-            width: 100%;
-            padding: 0.85rem 1rem;
-            color: var(--rain-boots);
-            text-decoration: none;
-            text-align: left;
-            background: transparent;
-            border: none;
-            font-size: 0.9rem;
-            font-weight: 500;
-            cursor: pointer;
-        }
-
-        .dropdown-menu a:hover,
-        .dropdown-menu button:hover {
-            background: #f7f5f2;
-        }
-
-        .logout-form {
-            margin: 0;
-        }
-
-        main {
-            width: 100%;
-            display: block;
-        }
+        
+        h1, h2, h3 {
+    font-family: 'Playfair Display', serif !important;
+    color: var(--rain-boots);
+}
     </style>
 </head>
 <body>
 
-    <nav class="nav-sirene">
-        <a href="{% url 'index' %}" class="brand">SPA SIRENE</a>
-        <div class="nav-links">
-            <div class="nav-item has-dropdown">
-                <a href="{% url 'home' %}" class="nav-link">Tratamientos</a>
-                <div class="dropdown-menu">
-                    <a href="{% url 'home' %}?categoria=FACIAL">Faciales</a>
-                    <a href="{% url 'home' %}?categoria=CORPORAL">Corporales</a>
-                </div>
+    <!-- BARRA DE NAVEGACIÓN -->
+    <nav class="bg-white fixed top-0 left-0 w-full z-50 border-b border-slate-100 shadow-sm h-20 transition-all duration-200">
+        <div class="max-w-7xl mx-auto h-full px-4 sm:px-6 lg:px-8 flex justify-between items-center">
+            
+            <div class="flex-shrink-0">
+                <a href="{% url 'index' %}" class="text-xl sm:text-2xl font-bold tracking-widest" style="font-family: 'Playfair Display', serif; color: var(--rain-boots);">
+                    SPA SIRENE
+                </a>
             </div>
-            {% if user.is_authenticated %}
-                {% if is_receptionist %}
-                    <a href="{% url 'reception_dashboard' %}" class="nav-link">Recepción</a>
-                {% endif %}
-                {% if is_admin_superior %}
-                    <a href="{% url 'admin_dashboard' %}" class="nav-link">Admin</a>
-                {% endif %}
-                <div class="nav-item has-dropdown">
-                    <a class="nav-link">Hola, {{ user.first_name|default:user.username }}</a>
-                    <div class="dropdown-menu">
-                        <!-- 🔄 RESTAURADO: Apartado de Mi Perfil arriba de Mis Citas -->
-                        <a href="{% url 'perfil' %}">Mi Perfil</a>
-                        
-                        <!-- 🌟 MANTENIDO: Redirección correcta a tus reservas (solo clientes) -->
-                        {% if not user.is_staff and not is_receptionist %}
-                            <a href="{% url 'mis_reservas' %}">Mis Citas</a>
-                        {% endif %}
-                        
-                        <form method="POST" action="{% url 'logout' %}" class="logout-form">
-                            {% csrf_token %}
-                            <button type="submit">Cerrar Sesión</button>
-                        </form>
+
+            <!-- MENÚ ESCRITORIO -->
+            <div class="hidden lg:flex items-center space-x-1">
+                
+                <div class="relative group py-2">
+                    <a href="{% url 'home' %}" class="text-xs font-semibold tracking-wider uppercase px-4 py-2 rounded-full text-[var(--rain-boots)] hover:bg-slate-50 transition duration-150 inline-flex items-center gap-1">
+                        Tratamientos
+                        <svg class="w-3 h-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
+                    </a>
+                    <div class="absolute top-full left-0 mt-1 w-48 bg-white rounded-xl shadow-xl border border-slate-100 opacity-0 invisible translate-y-2 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 transition-all duration-200 overflow-hidden z-50">
+                        <a href="{% url 'home' %}?categoria=FACIAL" class="block px-4 py-3 text-sm text-[var(--rain-boots)] hover:bg-slate-50 font-medium">Faciales</a>
+                        <a href="{% url 'home' %}?categoria=CORPORAL" class="block px-4 py-3 text-sm text-[var(--rain-boots)] hover:bg-slate-50 font-medium">Corporales</a>
                     </div>
                 </div>
-            {% else %}
-                <a href="{% url 'login' %}" class="nav-link">Login</a>
-                <a href="{% url 'register' %}" class="nav-button">Registro</a>
-            {% endif %}
+
+                {% if user.is_authenticated %}
+                    {% if is_receptionist %}
+                        <a href="{% url 'reception_dashboard' %}" class="text-xs font-semibold tracking-wider uppercase px-4 py-2 rounded-full text-[var(--rain-boots)] hover:bg-slate-50 transition duration-150">Recepción</a>
+                    {% endif %}
+                    {% if is_admin_superior %}
+                        <a href="{% url 'admin_dashboard' %}" class="text-xs font-semibold tracking-wider uppercase px-4 py-2 rounded-full text-[var(--rain-boots)] hover:bg-slate-50 transition duration-150">Admin</a>
+                    {% endif %}
+                    
+                    <div class="h-4 w-px bg-slate-200 mx-2"></div>
+
+                    <div class="relative group py-2">
+                        <button class="text-xs font-semibold tracking-wider uppercase px-4 py-2.5 bg-slate-50 border border-slate-100 rounded-full text-[var(--rain-boots)] group-hover:bg-slate-100 transition duration-150 inline-flex items-center gap-1.5 focus:outline-none">
+                            Hola, <span class="font-bold text-slate-800">{{ user.first_name|default:user.username }}</span>
+                            <svg class="w-3 h-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
+                        </button>
+                        <div class="absolute top-full right-0 mt-1 w-52 bg-white rounded-xl shadow-xl border border-slate-100 opacity-0 invisible translate-y-2 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 transition-all duration-200 overflow-hidden z-50">
+                            <a href="{% url 'perfil' %}" class="block px-4 py-3 text-sm text-[var(--rain-boots)] hover:bg-slate-50 font-medium border-b border-slate-50">Mi Perfil</a>
+                            
+                            {% if not user.is_staff and not is_receptionist %}
+                                <a href="{% url 'mis_reservas' %}" class="block px-4 py-3 text-sm text-[var(--rain-boots)] hover:bg-slate-50 font-medium border-b border-slate-50">Mis Citas</a>
+                            {% endif %}
+                            
+                            <form method="POST" action="{% url 'logout' %}" class="logout-form m-0">
+                                {% csrf_token %}
+                                <button type="submit" class="w-full text-left block px-4 py-3 text-sm text-red-600 hover:bg-red-50 font-medium focus:outline-none">Cerrar Sesión</button>
+                            </form>
+                        </div>
+                    </div>
+                {% else %}
+                    <a href="{% url 'login' %}" class="text-xs font-semibold tracking-wider uppercase px-4 py-2 rounded-full text-[var(--rain-boots)] hover:bg-slate-50 transition duration-150">Login</a>
+                    <a href="{% url 'register' %}" class="text-xs font-semibold tracking-wider uppercase px-5 py-2.5 bg-[#334B64] text-white rounded-full hover:opacity-90 shadow-sm transition duration-150 ml-2">Registro</a>
+                {% endif %}
+            </div>
+
+            <!-- BOTÓN HAMBURGUESA MÓVIL -->
+            <div class="flex items-center lg:hidden">
+                <button id="menu-toggle-btn" type="button" class="p-2 rounded-lg text-slate-500 hover:text-slate-900 hover:bg-slate-50 focus:outline-none transition duration-150" aria-label="Abrir Menú">
+                    <svg class="h-6 w-6" id="icon-hamburger" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                    <svg class="hidden h-6 w-6" id="icon-close" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+
         </div>
     </nav>
 
-    <main>
+    <!-- MENÚ DESPLEGABLE EN MÓVIL (Usa la clase 'menu-oculto' para evitar bloqueos fantasma en PC) -->
+    <div class="lg:hidden bg-white border-b border-slate-200 fixed top-20 left-0 w-full max-h-[calc(100vh-80px)] overflow-y-auto z-40 shadow-lg menu-oculto" id="mobile-dropdown-menu">
+        <div class="px-4 pt-3 pb-6 space-y-1">
+            
+            <div class="py-2 border-b border-slate-50">
+                <p class="px-3 text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Tratamientos</p>
+                <a href="{% url 'home' %}" class="block px-3 py-2.5 rounded-lg text-base font-medium text-slate-700 hover:bg-slate-50">Ver todos</a>
+                <a href="{% url 'home' %}?categoria=FACIAL" class="block px-3 py-2.5 rounded-lg text-base font-medium text-slate-700 hover:bg-slate-50 pl-6">↳ Faciales</a>
+                <a href="{% url 'home' %}?categoria=CORPORAL" class="block px-3 py-2.5 rounded-lg text-base font-medium text-slate-700 hover:bg-slate-50 pl-6">↳ Corporales</a>
+            </div>
+
+            {% if user.is_authenticated %}
+                {% if is_receptionist or is_admin_superior %}
+                    <div class="py-2 border-b border-slate-50">
+                        <p class="px-3 text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Gestión</p>
+                        {% if is_receptionist %}
+                            <a href="{% url 'reception_dashboard' %}" class="block px-3 py-2.5 rounded-lg text-base font-medium text-slate-700 hover:bg-slate-50">Recepción</a>
+                        {% endif %}
+                        {% if is_admin_superior %}
+                            <a href="{% url 'admin_dashboard' %}" class="block px-3 py-2.5 rounded-lg text-base font-medium text-slate-700 hover:bg-slate-50">Administración</a>
+                        {% endif %}
+                    </div>
+                {% endif %}
+
+                <div class="py-2">
+                    <p class="px-3 text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Tu Cuenta ({{ user.first_name|default:user.username }})</p>
+                    <a href="{% url 'perfil' %}" class="block px-3 py-2.5 rounded-lg text-base font-medium text-slate-700 hover:bg-slate-50">Mi Perfil</a>
+                    
+                    {% if not user.is_staff and not is_receptionist %}
+                        <a href="{% url 'mis_reservas' %}" class="block px-3 py-2.5 rounded-lg text-base font-medium text-slate-700 hover:bg-slate-50">Mis Citas</a>
+                    {% endif %}
+                    
+                    <form method="POST" action="{% url 'logout' %}" class="logout-form mt-2 px-3">
+                        {% csrf_token %}
+                        <button type="submit" class="w-full text-center block py-3 rounded-xl text-base font-semibold text-white bg-red-500 hover:bg-red-600 shadow-sm transition focus:outline-none">Cerrar Sesión</button>
+                    </form>
+                </div>
+            {% else %}
+                <div class="pt-4 grid grid-cols-2 gap-3 px-3">
+                    <a href="{% url 'login' %}" class="text-center block py-3 rounded-xl text-base font-medium text-[var(--rain-boots)] bg-slate-50 border border-slate-200">Login</a>
+                    <a href="{% url 'register' %}" class="text-center block py-3 rounded-xl text-base font-medium text-white bg-[#334B64] shadow-sm">Registro</a>
+                </div>
+            {% endif %}
+
+        </div>
+    </div>
+
+    <!-- CONTENEDOR PRINCIPAL DEL CONTENIDO -->
+    <main class="w-full block relative z-10">
         {% block content %}{% endblock %}
     </main>
+
+    <!-- CONTROL JAVASCRIPT DEL MENÚ MÓVIL (Totalmente optimizado) -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const toggleButton = document.getElementById('menu-toggle-btn');
+            const mobileMenu = document.getElementById('mobile-dropdown-menu');
+            const hamburgerIcon = document.getElementById('icon-hamburger');
+            const closeIcon = document.getElementById('icon-close');
+
+            if (toggleButton && mobileMenu) {
+                toggleButton.addEventListener('click', function () {
+                    const isClosed = mobileMenu.classList.contains('menu-oculto');
+                    
+                    if (isClosed) {
+                        mobileMenu.classList.remove('menu-oculto');
+                        hamburgerIcon.classList.add('hidden');
+                        closeIcon.classList.remove('hidden');
+                    } else {
+                        mobileMenu.classList.add('menu-oculto');
+                        hamburgerIcon.classList.remove('hidden');
+                        closeIcon.classList.add('hidden');
+                    }
+                });
+
+                // Forzar el cierre absoluto del menú si el usuario escala o estira la pantalla a tamaño PC
+                window.addEventListener('resize', function () {
+                    if (window.innerWidth >= 1024) {
+                        mobileMenu.classList.add('menu-oculto');
+                        hamburgerIcon.classList.remove('hidden');
+                        closeIcon.classList.add('hidden');
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 </html>
