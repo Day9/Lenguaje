@@ -32,3 +32,9 @@ db.sqlite3
 .vscode/
 .DS_Store
 Thumbs.db
+
+db.sqlite3
+__pycache__/
+*.pyc
+.env
+venv/
